@@ -5,5 +5,6 @@ const dotenv_1 = require("dotenv");
 dotenv_1.config({ path: "../.env" });
 const client = new WoolfieClient_1.WoolfieClient(process.env.TOKEN);
 exports.client = client;
+client.provider.init();
 const PREFIX = ">";
 exports.PREFIX = PREFIX;

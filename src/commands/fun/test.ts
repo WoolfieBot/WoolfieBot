@@ -12,7 +12,7 @@ class Test extends Command {
     }
 
     async run(message: Message, args: Array<string>) {
-        message.channel.send()
+        console.log(client.provider.getGuild(message.guild!.id))
     }
 }
 

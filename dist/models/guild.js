@@ -1,24 +1,53 @@
 "use strict";
-const types_1 = require("sequelize/types");
-const main_1 = require("../main");
-class Guilds extends types_1.Model {
+const sequelize_1 = require("sequelize");
+const sequelize = require("./sequelize");
+class Guilds extends sequelize_1.Model {
 }
 Guilds.init({
     id: {
-        type: types_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false
     },
     guildID: {
-        type: types_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.STRING,
         allowNull: false
     },
     guildName: {
-        type: types_1.DataTypes.STRING
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false
+    },
+    prefix: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false
+    },
+    welcomeMsg: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
+    },
+    welcomeChannel: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
+    },
+    lvlUpMsg: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
+    },
+    lvlUpEmbed: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
+    },
+    lvlUpChannel: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
+    },
+    isLvl: {
+        type: sequelize_1.DataTypes.INTEGER,
+        defaultValue: 0
     }
 }, {
-    sequelize: main_1.client.provider.sequelize,
-    modelName: 'Guilds',
+    sequelize: sequelize,
+    modelName: 'guilds',
     freezeTableName: true
 });
 module.exports = Guilds;
