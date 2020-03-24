@@ -25,5 +25,27 @@ class WoolfieProvider {
             }
         });
     }
+    getNote(guildID, noteName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let data = yield sequelize.models.notes.findOne({ where: { guildID: guildID, noteName: noteName } });
+            if (data) {
+                return data;
+            }
+            else {
+                return null;
+            }
+        });
+    }
+    createNote(guildID, noteName, note, creatorID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                sequelize.models.notes.create({ guildID: guildID, noteName: noteName, note: note, creatorID: creatorID });
+            }
+            catch (error) {
+                return false + error;
+            }
+            return true;
+        });
+    }
 }
 exports.WoolfieProvider = WoolfieProvider;

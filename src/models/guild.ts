@@ -1,4 +1,4 @@
-import { Model, DataTypes, Sequelize } from "sequelize";
+import { Model, DataTypes } from "sequelize";
 import sequelize = require("./sequelize");
 
 class Guilds extends Model {}
@@ -7,7 +7,7 @@ Guilds.init({
     id:{
         type: DataTypes.INTEGER,
         primaryKey: true,
-        allowNull: false
+        allowNull: true
     },
     guildID: {
         type: DataTypes.STRING,
@@ -22,7 +22,7 @@ Guilds.init({
         allowNull: false
     },
     welcomeMsg: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(2000),
         allowNull: true
     },
     welcomeChannel: {
@@ -30,7 +30,7 @@ Guilds.init({
         allowNull: true
     },
     lvlUpMsg: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(2000),
         allowNull: true
     },
     lvlUpEmbed: {

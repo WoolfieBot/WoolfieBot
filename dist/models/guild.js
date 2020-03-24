@@ -7,7 +7,7 @@ Guilds.init({
     id: {
         type: sequelize_1.DataTypes.INTEGER,
         primaryKey: true,
-        allowNull: false
+        allowNull: true
     },
     guildID: {
         type: sequelize_1.DataTypes.STRING,
@@ -22,7 +22,7 @@ Guilds.init({
         allowNull: false
     },
     welcomeMsg: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.STRING(2000),
         allowNull: true
     },
     welcomeChannel: {
@@ -30,7 +30,7 @@ Guilds.init({
         allowNull: true
     },
     lvlUpMsg: {
-        type: sequelize_1.DataTypes.STRING,
+        type: sequelize_1.DataTypes.STRING(2000),
         allowNull: true
     },
     lvlUpEmbed: {
