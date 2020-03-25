@@ -15,7 +15,7 @@ class Note extends Command {
     
     async run(message: Message, args: Array<string>) {
         if(!args[0]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help ${this.name}\`\`\``)
-        
+
         if(args[0] === "all" && !args[1]){
             let string: string = "";
             let data: any = await client.provider.getAllNotes(message.guild!.id)

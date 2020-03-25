@@ -150,6 +150,107 @@ class WoolfieProvider {
             
         return target;
     }
+
+    /**
+     * Функция удаляющая записку из БД
+     * 
+     * @param guildID строка с айди сервера.
+     * @param noteName строка с названием записки.
+     * @returns возвращает Promise<boolean> = 'true' при успешном удалении, в противном случае возвращает false с ошибкой.
+     */
+    public async deleteNote(guildID: string, noteName: string): Promise<boolean> {
+        try {
+            sequelize.models.notes.destroy({where:{guildID:guildID,noteName:noteName}})
+        } catch (error) {
+            return false + error;
+        }
+        return true;
+    }
+
+    /**
+     * Функция для получения информации о профиле пользователя.
+     * 
+     * @param guildID строка с айди сервера.
+     * @param userID строка с идентификатором пользователя.
+     * @returns Возвращает Promise<Object> с данными профиля, в противном случае возвращает null.
+     */
+    public async getProfile(guildID: string, userID: string): Promise<any> {
+        try {
+            let data: Promise<object> = await sequelize.models.profiles.findOne({where:{guildID:guildID,userID:userID}})
+            if(data){
+                return data
+            }else{
+                return null
+            }            
+        } catch (error) {
+            return console.error(error)
+        }
+    }
+
+    /**
+     * Функция для получения информации о профиле пользователя.
+     * 
+     * @param guildID строка с айди сервера.
+     * @param userID строка с идентификатором пользователя.
+     * @returns Возвращает Promise<Object> с данными профиля, в противном случае возвращает null.
+     */
+    public async createProfile(guildID: string, userID: string, username: string, userDisplayName: string, roles: string): Promise<boolean> {
+        try {
+            await sequelize.models.profiles.create({guildID:guildID,userID:userID,username:username,userDisplayName:userDisplayName,roles:roles})         
+        } catch (error) {
+            return false + error;
+        }
+        return true;
+    }
+
+    /**
+     * Функция которая случайным образом выбирает число от минимального до максимального значения
+     * 
+     * @param min минимальное число.
+     * @param max максимальное число (не учитывается).
+     * @returns Promise<number> рандомное число.
+     */
+    public async getRandomInt(min: number, max: number) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min;
+      
+      }
+
+    /**
+     * Функция для обновления профиля определенного пользователя.
+     * 
+     * @param guildID строка с айди сервера.
+     * @param userID строка с идентификатором пользователя.
+     * @param update объект с опциями обновления.
+     * @returns Возвращает Promise<boolean> = true, в противном случае false с ошибкой
+     */
+    public async updateProfile(guildID: string, userID: string, update: object): Promise<boolean> {
+        try {
+            await sequelize.models.profiles.update(update,{where:{guildID:guildID,userID:userID}})
+        } catch (error) {
+            return false + error;
+        }
+        return true;
+    }
+    
+    /**
+     * Функция для обновления ранкинга определенного пользователя.
+     * 
+     * @param guildID строка с айди сервера.
+     * @param userID строка с идентификатором пользователя.
+     * @param update объект с опциями обновления.
+     * @returns Возвращает Promise<boolean> = true, в противном случае false с ошибкой
+     */
+    public async updateRanks(guildID: string, userID: string, update: object): Promise<boolean> {
+        try {
+            await sequelize.models.profiles.increment(update,{where:{guildID:guildID,userID:userID}})
+        } catch (error) {
+            return false + error;
+        }
+        return true;
+    }
+    
 }
 
 export { WoolfieProvider }
