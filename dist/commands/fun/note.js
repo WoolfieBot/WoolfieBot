@@ -24,7 +24,7 @@ class Note extends Command_1.Command {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             if (!args[0])
-                return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help note\`\`\``);
+                return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help ${this.name}\`\`\``);
             if (args[0] === "all" && !args[1]) {
                 let string = "";
                 let data = yield main_1.client.provider.getAllNotes(message.guild.id);
@@ -51,7 +51,7 @@ class Note extends Command_1.Command {
                 }
                 return message.channel.send(`Все записки пользователя **${member.nickname}**: ${string}`);
             }
-            let data = yield main_1.client.provider.getNote(message.guild.id, args[0]);
+            let data = yield main_1.client.provider.getNote(message.guild.id, args.slice(0).join(" "));
             if (data) {
                 message.channel.send(data.note);
             }

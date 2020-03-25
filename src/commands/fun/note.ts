@@ -14,7 +14,8 @@ class Note extends Command {
     }
     
     async run(message: Message, args: Array<string>) {
-        if(!args[0]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help note\`\`\``)
+        if(!args[0]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help ${this.name}\`\`\``)
+        
         if(args[0] === "all" && !args[1]){
             let string: string = "";
             let data: any = await client.provider.getAllNotes(message.guild!.id)
@@ -41,7 +42,7 @@ class Note extends Command {
             }
             return message.channel.send(`Все записки пользователя **${member.nickname}**: ${string}`)
         }
-        let data: any = await client.provider.getNote(message.guild!.id, args[0])
+        let data: any = await client.provider.getNote(message.guild!.id, args.slice(0).join(" "))
         if(data){
             message.channel.send(data.note)
         }else{

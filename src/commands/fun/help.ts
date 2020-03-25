@@ -39,7 +39,7 @@ class Help extends Command {
             .setColor(0x333333)
             .setDescription(`${message.author.username} проверь личные сообщения!`)
             let cmdName: string = "";
-            client.commands.forEach(x => cmdName += x.name)
+            client.commands.forEach(x => cmdName += `${x.name}, `)
             let Sembed = new MessageEmbed()
             .setColor(0x333333)
             .setAuthor(`Список команд бота`, guildIcon)

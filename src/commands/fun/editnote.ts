@@ -14,12 +14,13 @@ class Editnote extends Command {
     }
     
     async run(message: Message, args: Array<string>) {
-        if(!args[0]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help editnote\`\`\``)
-        if(!args[1]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help editnote\`\`\``)
+        if(!args[0]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help ${this.name}\`\`\``)
+        if(!args[1]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help ${this.name}\`\`\``)
 
-        if(await client.provider.getUserNote(message.guild!.id, message.author.id, args[0]) !== null){
-            let string: string = args.slice(1).join(" ")
-            if(await client.provider.editNote(message.guild!.id,args[0],string) == true){
+        let noteName: Array<any> = Array.from(args.slice(0).join(" ").matchAll(/{(.*?)}/))
+        if(await client.provider.getUserNote(message.guild!.id, message.author.id, noteName[0][1]) !== null){            
+            let note: any = args.slice(0).join(" ").replace(noteName[0][0], "")
+            if(await client.provider.editNote(message.guild!.id,noteName[0][1],note) == true){
                 message.channel.send(`Записка успешно изменена!`)
             }else{
                 message.channel.send(`При редактировании записки произошла ошибка!`)

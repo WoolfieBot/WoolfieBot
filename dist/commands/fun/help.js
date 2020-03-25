@@ -49,7 +49,7 @@ class Help extends Command_1.Command {
                     .setColor(0x333333)
                     .setDescription(`${message.author.username} проверь личные сообщения!`);
                 let cmdName = "";
-                main_1.client.commands.forEach(x => cmdName += x.name);
+                main_1.client.commands.forEach(x => cmdName += `${x.name}, `);
                 let Sembed = new discord_js_1.MessageEmbed()
                     .setColor(0x333333)
                     .setAuthor(`Список команд бота`, guildIcon)
