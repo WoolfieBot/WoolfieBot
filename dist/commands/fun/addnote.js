@@ -29,6 +29,7 @@ class AddNote extends Command_1.Command {
             if ((yield main_1.client.provider.getNote(message.guild.id, args[0])) !== null)
                 return message.channel.send(`Такая записка уже существует!`);
             let note = args.slice(1).join(' ');
+            let noteName = args.slice(0).join(" ").matchAll(/{(.*?)}/).toString();
             if ((yield main_1.client.provider.createNote(message.guild.id, args[0], note, message.author.id)) == true) {
                 return message.channel.send(`Записка ${args[0]} успешно создана!`);
             }

@@ -1,5 +1,5 @@
 import { Command } from "../../domain/Command";
-import { Message, GuildMember } from "discord.js";
+import { Message } from "discord.js";
 import { client } from "../../main";
 
 class Note extends Command {
@@ -28,7 +28,7 @@ class Note extends Command {
         }
         if(args[0] === "all" && args[1]){
             let string: string = "";
-            let member: any = await client.provider.getMember(message, args[1])
+            let member: any = await client.provider.getMember(message, args.slice(1).join(" "))
             let data: any = await client.provider.getAllUsersNote(message.guild!.id,member.user.id)
             for (const key in data) {
                 if (data.hasOwnProperty(key)) {

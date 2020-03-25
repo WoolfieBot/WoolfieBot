@@ -19,7 +19,7 @@ class WoolfieProvider {
             if(data){
                 return data
             }else{
-                return console.exception(`Произошла ошибка при получении данных о сервере ID: ` + guildID)
+                return console.log(`Произошла ошибка при получении данных о сервере ID: ` + guildID)
             }
     }
     
@@ -89,6 +89,23 @@ class WoolfieProvider {
     }
 
     /**
+     * Функция которая находит одну записку определённого пользователя в БД.
+     * 
+     * @param guildID строка с айди сервера.
+     * @param creatorID строка с идентификатором пользователя.
+     * @param noteName строка с названием записки.
+     * @returns возвращает Promise<Object> с названием, содержимым, автором записки. 
+     */
+    public async getUserNote(guildID: string, creatorID: string, noteName: string): Promise<any> {
+        let data: Promise<Object> = await sequelize.models.notes.findOne({where:{guildID:guildID,creatorID:creatorID,noteName:noteName}})
+        if(data){
+            return data
+        }else{
+            return null;
+        }
+    }
+
+    /**
      * Функция редактирующая записку в БД
      * 
      * @param guildID строка с айди сервера.
@@ -110,7 +127,8 @@ class WoolfieProvider {
      * 
      * @param message объект сообщения, нужен для варианта с упоминанем.
      * @param toFind строка с ником пользователя которого нужно найти.
-     * @returns Возвращает объект пользователя.
+     * @returns Возвращает объект Promise<member>.
+     * @example <WoolfieProvider>.getMember(message, "alowave")
      */
     public async getMember(message: Message, toFind = ''): Promise<any> {
         toFind = toFind.toLowerCase();

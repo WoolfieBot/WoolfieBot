@@ -21,7 +21,7 @@ class WoolfieProvider {
                 return data;
             }
             else {
-                return console.exception(`Произошла ошибка при получении данных о сервере ID: ` + guildID);
+                return console.log(`Произошла ошибка при получении данных о сервере ID: ` + guildID);
             }
         });
     }
@@ -61,6 +61,17 @@ class WoolfieProvider {
     getAllUsersNote(guildID, creatorID) {
         return __awaiter(this, void 0, void 0, function* () {
             let data = yield sequelize.models.notes.findAll({ where: { guildID: guildID, creatorID: creatorID } });
+            if (data) {
+                return data;
+            }
+            else {
+                return null;
+            }
+        });
+    }
+    getUserNote(guildID, creatorID, noteName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let data = yield sequelize.models.notes.findOne({ where: { guildID: guildID, creatorID: creatorID, noteName: noteName } });
             if (data) {
                 return data;
             }

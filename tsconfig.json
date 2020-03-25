@@ -9,6 +9,7 @@
         "noImplicitThis":true,
         "outDir": "dist",
         "pretty": true,
+        "lib": ["ES2020"]
     },
     "include": [
         "src", "module.d.ts",

@@ -38,7 +38,7 @@ class Note extends Command_1.Command {
             }
             if (args[0] === "all" && args[1]) {
                 let string = "";
-                let member = yield main_1.client.provider.getMember(message, args[1]);
+                let member = yield main_1.client.provider.getMember(message, args.slice(1).join(" "));
                 let data = yield main_1.client.provider.getAllUsersNote(message.guild.id, member.user.id);
                 for (const key in data) {
                     if (data.hasOwnProperty(key)) {
