@@ -51,8 +51,7 @@ class Rank extends Command {
         ctx.clip();
         const avatar = await Canvas.loadImage(member.user.displayAvatarURL({format:'png'}));
         ctx.drawImage(avatar, 20, 20, 150, 150);
-        const attachment = new MessageAttachment(canvas.toBuffer(), 'ranking.png');
-        
+        const attachment = new MessageAttachment(canvas.toBuffer(), 'ranking.png');        
         message.channel.send(attachment);
     }
 }
