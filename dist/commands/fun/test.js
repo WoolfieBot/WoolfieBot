@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 const Command_1 = require("../../domain/Command");
-const main_1 = require("../../main");
 class Test extends Command_1.Command {
     constructor() {
         super({
@@ -20,7 +19,7 @@ class Test extends Command_1.Command {
     }
     run(message, args) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(main_1.client.provider.getGuild(message.guild.id));
+            console.log();
         });
     }
 }

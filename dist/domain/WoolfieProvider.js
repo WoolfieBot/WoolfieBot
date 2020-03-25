@@ -47,5 +47,56 @@ class WoolfieProvider {
             return true;
         });
     }
+    getAllNotes(guildID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let data = yield sequelize.models.notes.findAll({ where: { guildID: guildID } });
+            if (data) {
+                return data;
+            }
+            else {
+                return null;
+            }
+        });
+    }
+    getAllUsersNote(guildID, creatorID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let data = yield sequelize.models.notes.findAll({ where: { guildID: guildID, creatorID: creatorID } });
+            if (data) {
+                return data;
+            }
+            else {
+                return null;
+            }
+        });
+    }
+    editNote(guildID, noteName, note) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                sequelize.models.notes.update({ note: note }, { where: { guildID: guildID, noteName: noteName } });
+            }
+            catch (error) {
+                return false + error;
+            }
+            return true;
+        });
+    }
+    getMember(message, toFind = '') {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            toFind = toFind.toLowerCase();
+            let target = (_a = message.guild) === null || _a === void 0 ? void 0 : _a.members.cache.get(toFind);
+            if (!target && message.mentions.members)
+                target = message.mentions.members.first();
+            if (!target && toFind) {
+                target = (_b = message.guild) === null || _b === void 0 ? void 0 : _b.members.cache.find(member => {
+                    return member.displayName.toLowerCase().includes(toFind) ||
+                        member.user.tag.toLowerCase().includes(toFind);
+                });
+            }
+            if (!target)
+                target = message.member;
+            return target;
+        });
+    }
 }
 exports.WoolfieProvider = WoolfieProvider;
