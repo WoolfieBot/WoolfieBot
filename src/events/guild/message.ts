@@ -19,6 +19,13 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
     } catch (error) {
         return console.log(error)
     }
+    if(profile == null){
+        const roles = message.member?.roles.cache
+        .filter(r => r.id !== message.guild?.id)
+        .map(r => r).join(", ") || 'none';
+        await client.provider.createProfile(message.guild.id,message.author.id,message.author.username,message.member!.displayName,roles)
+        profile = await client.provider.getProfile(message.guild.id,message.author.id)
+    }
     
     if(!message.member) message.guild.members.fetch(message)
     
@@ -47,12 +54,6 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
         if(messageCheckXp >= 2 && messageCheckXp <= 7){
             toUpdate.xp = await client.provider.getRandomInt(6,15)
             toUpdate.coins = await client.provider.getRandomInt(2,8)
-            if(profile == null){
-                const roles = message.member?.roles.cache
-                .filter(r => r.id !== message.guild?.id)
-                .map(r => r).join(", ") || 'none';
-                await client.provider.createProfile(message.guild.id,message.author.id,message.author.username,message.member!.displayName,roles)
-            }
             if(profile.xp >= Math.floor(100 + 100 * 2.891 * parseInt(profile.lvl) + 1)){
                 let channel: any = message.guild.channels.cache.find(ch => ch.id == settings.lvlUpChannel)
                 let text = settings.lvlUpMsg
