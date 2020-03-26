@@ -45,11 +45,14 @@ class Rank extends Command {
         }
         //@ts-ignore
         ctx.roundRect(canvas.width / 3.5,canvas.height / 1.4,kavo,canvas.height / 4.2, 30).fill();
+        ctx.fillStyle = 'black';
+        ctx.font = 'bold 48px serif';
+        ctx.fillText("asdasdsdasadsdasdadsasdasdasdasdadsasdadsasdadsadsadsasaddadasdasdasdasdsadsa",50,100)
         ctx.beginPath();
         ctx.arc(93, 93, 73, 0, Math.PI * 2, true);
         ctx.closePath();
         ctx.clip();
-        const avatar = await Canvas.loadImage(member.user.displayAvatarURL({format:'png'}));
+        const avatar = await Canvas.loadImage(member.user.displayAvatarURL({format:'png'}));        
         ctx.drawImage(avatar, 20, 20, 150, 150);
         const attachment = new MessageAttachment(canvas.toBuffer(), 'ranking.png');        
         message.channel.send(attachment);
