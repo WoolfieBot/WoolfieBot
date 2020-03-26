@@ -1,5 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import { WoolfieClient } from "../../domain/WoolfieClient";
+const Enmap = require('enmap')
+const ops = new Enmap({name: 'test'})
 
 export = async (client: WoolfieClient, message: Message): Promise<void> => {
     if(message.author.bot) return;
@@ -32,7 +34,7 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
         command = client.aliases.get(cmd)
     }
     if(command) {
-        command.run(message, args, cmd);
+        command.run(message, args, cmd, ops);
     }
     }
     if(settings.isLvl == 1){

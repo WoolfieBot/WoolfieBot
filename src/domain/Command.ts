@@ -28,7 +28,7 @@ class Command {
         this.category = data.category;
     }
 
-    public run(message: Message, args: string[], cmd: string): void {
+    public run(message: Message, args: string[], cmd: string, ops: any): void {
         throw new Error('Метод не предусмотрен.');
     }
 

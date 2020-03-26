@@ -1,5 +1,5 @@
 import { Client } from "discord.js";
-import * as moment from 'moment';
+import moment, { Moment } from 'moment';
 import { Command } from "./Command";
 import { load } from './CommandHandler';
 import { loadE } from "./EventHandler";
