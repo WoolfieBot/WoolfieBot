@@ -19,7 +19,7 @@ Guilds.init({
     },
     prefix: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     welcomeMsg: {
         type: DataTypes.STRING(2000),
@@ -43,6 +43,7 @@ Guilds.init({
     },
     isLvl: {
         type: DataTypes.INTEGER,
+        allowNull: true,
         defaultValue: 0
     }
 },{

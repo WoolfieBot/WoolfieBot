@@ -41,7 +41,7 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
         command = client.aliases.get(cmd)
     }
     if(command) {
-        command.run(message, args, cmd, ops);
+        command.run(message, args, cmd, ops, client);
     }
     }
     if(settings.isLvl == 1){

@@ -250,6 +250,20 @@ class WoolfieProvider {
         }
         return true;
     }
+
+    /**
+     * Функция которая создает сервер в БД.
+     * 
+     * 
+     */
+    public async createGuild(guildID: string, guildName: string, welcomeMsg: string, welcomeChannel: string, lvlUpMsg: string, lvlUpChannel:string) {
+        try {
+            await sequelize.models.guilds.create({guildID:guildID,guildName:guildName,welcomeMsg:welcomeMsg,welcomeChannel:welcomeChannel,lvlUpMsg:lvlUpMsg,lvlUpChannel:lvlUpChannel})
+        } catch (error) {
+            return false + error;
+        }
+        return true;
+    }
     
 }
 

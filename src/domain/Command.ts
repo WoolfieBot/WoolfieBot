@@ -1,4 +1,5 @@
 import { Message } from "discord.js";
+import { WoolfieClient } from "./WoolfieClient";
 
 interface CommandData {
     name: string;
@@ -28,7 +29,7 @@ class Command {
         this.category = data.category;
     }
 
-    public run(message: Message, args: string[], cmd: string, ops: any): void {
+    public run(message: Message, args: string[], cmd: string, ops: any, client: WoolfieClient): void {
         throw new Error('Метод не предусмотрен.');
     }
 

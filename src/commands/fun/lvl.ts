@@ -18,7 +18,9 @@ class Rank extends Command {
         const canvas = Canvas.createCanvas(700, 180)
         const ctx = canvas.getContext('2d');
         var member: any = await client.provider.getMember(message, args.join(" "));        
-        var stats = await client.provider.getProfile(message.guild!.id, member.id)
+        var stats = await client.provider.getProfile(message.guild!.id, member.id);
+        var guild = await client.provider.getGuild(message.guild!.id)
+        if(guild.isLvl === 0) return message.channel.send(`На данном сервере отключён ранкинг.`)
         if(stats === null){
             const roles: any = member?.roles.cache
             .filter((r: any) => r.id !== message.guild?.id)
@@ -56,7 +58,7 @@ class Rank extends Command {
         ctx.font = 'bold 32px serif';
         ctx.textAlign = "left"; 
         ctx.fillText(member.displayName,canvas.width / 2.6,canvas.height / 3)
-        ctx.textAlign = "center";
+        ctx.textAlign = "center"; 
         ctx.font = 'bold 20px serif';
         ctx.fillText(stats.xp + "/" + tavo,canvas.width / 1.55,canvas.height / 1.17)
         ctx.font = 'bold 25px serif';
