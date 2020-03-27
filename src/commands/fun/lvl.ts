@@ -45,9 +45,14 @@ class Rank extends Command {
         }
         //@ts-ignore
         ctx.roundRect(canvas.width / 3.5,canvas.height / 1.4,kavo,canvas.height / 4.2, 30).fill();
-        ctx.fillStyle = 'black';
-        ctx.font = 'bold 48px serif';
-        ctx.fillText("asdasdsdasadsdasdadsasdasdasdasdadsasdadsasdadsadsadsasaddadasdasdasdasdsadsa",50,100)
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 32px serif';
+        ctx.textAlign = "center"; 
+        ctx.fillText(member.displayName,canvas.width / 2.6,canvas.height / 3)
+        ctx.font = 'bold 20px serif';
+        ctx.fillText(stats.xp + "/" + tavo,canvas.width / 1.55,canvas.height / 1.17)
+        ctx.font = 'bold 25px serif';
+        ctx.fillText(stats.lvl + "<- Лвл | Репа -> " + stats.reputation,canvas.width / 1.9,canvas.height / 1.5)
         ctx.beginPath();
         ctx.arc(93, 93, 73, 0, Math.PI * 2, true);
         ctx.closePath();

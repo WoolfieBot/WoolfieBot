@@ -31,6 +31,11 @@ Profiles.init({
         allowNull: true,
         defaultValue: null
     },
+    about:{
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: 'хто я?'
+    },
     coins:{
         type: DataTypes.STRING,
         allowNull: true,
