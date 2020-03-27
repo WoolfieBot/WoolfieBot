@@ -17,8 +17,15 @@ class Rank extends Command {
     async run(message: Message, args: Array<string>) {
         const canvas = Canvas.createCanvas(700, 180)
         const ctx = canvas.getContext('2d');
-        var member = await client.provider.getMember(message, args.join(" "));        
-        const stats = await client.provider.getProfile(message.guild!.id, member.id)
+        var member: any = await client.provider.getMember(message, args.join(" "));        
+        var stats = await client.provider.getProfile(message.guild!.id, member.id)
+        if(stats === null){
+            const roles: any = member?.roles.cache
+            .filter((r: any) => r.id !== message.guild?.id)
+            .map((r:any) => r.id).join(", ") || 'none';
+            await client.provider.createProfile(message.guild!.id,member.id,member.user.username,member!.displayName,roles)
+            stats = await client.provider.getProfile(message.guild!.id,member.id)
+        }
         //@ts-ignore
         ctx.roundRect = function(x: number, y: number, w: number, h: number, r: number): any {
             if(w < 2 * r) r = w / 2;
@@ -47,8 +54,9 @@ class Rank extends Command {
         ctx.roundRect(canvas.width / 3.5,canvas.height / 1.4,kavo,canvas.height / 4.2, 30).fill();
         ctx.fillStyle = 'white';
         ctx.font = 'bold 32px serif';
-        ctx.textAlign = "center"; 
+        ctx.textAlign = "left"; 
         ctx.fillText(member.displayName,canvas.width / 2.6,canvas.height / 3)
+        ctx.textAlign = "center";
         ctx.font = 'bold 20px serif';
         ctx.fillText(stats.xp + "/" + tavo,canvas.width / 1.55,canvas.height / 1.17)
         ctx.font = 'bold 25px serif';
