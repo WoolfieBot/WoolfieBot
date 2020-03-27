@@ -7,9 +7,9 @@ class Help extends Command {
     constructor() {
         super({
             name:"help",
-            description: "Ya sral",
-            usage: ">help",
-            aliases: ["pizda","chlen"],
+            description: "Единственный, кто ответит на твои просьбы о помощи. <:feelsbadman:604775495040630907>",
+            usage: ">help [Название команды]",
+            aliases: ["h"],
             category: "fun"
         });
     }

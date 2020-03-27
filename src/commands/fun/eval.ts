@@ -7,8 +7,8 @@ class Eval extends Command {
     constructor(){
         super({
             name: "eval",
-            usage: ">rank",
-            description: "Команда которая показывает ваш профиль левелинга на данном сервере.",
+            usage: ">eval [Код]",
+            description: "Команда для тестирования кода, доступна только разработчику.",
             category: "fun",
             aliases: ["e","ev"]
         });
@@ -19,7 +19,7 @@ class Eval extends Command {
         if(message.author.id === ownerid) {
             try {
                 let toEval = args.join(" ");
-                let evaluated = util.inspect(eval(toEval));
+                let evaluated = util.inspect(eval("(async () => {" + toEval + "})()"));
                 if(toEval) {
                     let hrStart = process.hrtime()
                     let hrDiff;
@@ -35,7 +35,7 @@ class Eval extends Command {
             return message.channel.send("У вас недостаточно прав на использование данной команды.")
         }
 
-    }
+    } 
 }
 
 export = Eval;

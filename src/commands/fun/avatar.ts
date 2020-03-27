@@ -6,7 +6,7 @@ class Avatar extends Command {
     constructor(){
         super({
             name: "avatar",
-            description: "Test command",
+            description: "Команда с помощью которой можно увидеть аватар пользователя!",
             aliases: ["a","ava"],
             category: "fun",
             usage: ">avatar [Упоминание или ник пользователя]"

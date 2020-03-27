@@ -2,6 +2,7 @@ import { client } from "../../main";
 import { Command } from "../../domain/Command";
 import { Message, MessageAttachment } from "discord.js";
 import * as Canvas from "canvas";
+import sequelize from "../../models/sequelize";
 
 class Rank extends Command {
     constructor(){
@@ -12,14 +13,22 @@ class Rank extends Command {
             category: "fun",
             aliases: ["lvl","r"]
         });
-    }
-    
+    }    
     async run(message: Message, args: Array<string>) {
         const canvas = Canvas.createCanvas(700, 180)
         const ctx = canvas.getContext('2d');
         var member: any = await client.provider.getMember(message, args.join(" "));        
         var stats = await client.provider.getProfile(message.guild!.id, member.id);
-        var guild = await client.provider.getGuild(message.guild!.id)
+        var guild = await client.provider.getGuild(message.guild!.id);
+        var top = await sequelize.models.profiles.findAll({where:{guildID:message.guild!.id}, order:[['lvl','DESC']]})
+        function getRank(top:any){
+            for (let index = 0; index < top.length; index++) {
+                const element = top[index];
+                if(element.userID == member.id){
+                    return index + 1
+                }      
+            }
+        }
         if(guild.isLvl === 0) return message.channel.send(`На данном сервере отключён ранкинг.`)
         if(stats === null){
             const roles: any = member?.roles.cache
@@ -28,6 +37,7 @@ class Rank extends Command {
             await client.provider.createProfile(message.guild!.id,member.id,member.user.username,member!.displayName,roles)
             stats = await client.provider.getProfile(message.guild!.id,member.id)
         }
+        Canvas.registerFont('assets/fonts/9887.otf',{ family: 'VAG World' })
         //@ts-ignore
         ctx.roundRect = function(x: number, y: number, w: number, h: number, r: number): any {
             if(w < 2 * r) r = w / 2;
@@ -55,14 +65,15 @@ class Rank extends Command {
         //@ts-ignore
         ctx.roundRect(canvas.width / 3.5,canvas.height / 1.4,kavo,canvas.height / 4.2, 30).fill();
         ctx.fillStyle = 'white';
-        ctx.font = 'bold 32px serif';
+        ctx.font = 'bold 32px "VAG World"';
         ctx.textAlign = "left"; 
-        ctx.fillText(member.displayName,canvas.width / 2.6,canvas.height / 3)
+        ctx.fillText(member.displayName,canvas.width / 3.2,canvas.height / 3)
         ctx.textAlign = "center"; 
-        ctx.font = 'bold 20px serif';
-        ctx.fillText(stats.xp + "/" + tavo,canvas.width / 1.55,canvas.height / 1.17)
-        ctx.font = 'bold 25px serif';
-        ctx.fillText(stats.lvl + "<- Лвл | Репа -> " + stats.reputation,canvas.width / 1.9,canvas.height / 1.5)
+        ctx.font = 'bold 20px "VAG World"';
+        ctx.fillText(stats.xp + "/" + tavo,canvas.width / 1.55,canvas.height / 1.15)
+        ctx.font = 'bold 20x "VAG World"';
+        ctx.textAlign = "left"; 
+        ctx.fillText("#" + getRank(top) + " Ранг " + stats.lvl + " Ур. " + stats.reputation + " 🍖",canvas.width / 3.2,canvas.height / 1.46)
         ctx.beginPath();
         ctx.arc(93, 93, 73, 0, Math.PI * 2, true);
         ctx.closePath();
