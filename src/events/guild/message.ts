@@ -29,8 +29,8 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
     
     if(!message.member) message.guild.members.fetch(message)
     
-    if(message.content.startsWith(settings.prefix)){
-    const args: Array<string> = message.content.slice(settings.prefix.length).trim().split(/ +/g);
+    if(message.content.startsWith(">>")){
+    const args: Array<string> = message.content.slice(">>".length).trim().split(/ +/g);
     const cmd: string = args.shift()!.toLowerCase();
     let command;
     if(cmd.length === 0) return;
