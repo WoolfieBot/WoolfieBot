@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@types/luxon": "^1.22.0",
     "@types/node": "^13.9.1",
     "better-sqlite3": "^6.0.1",
     "canvas": "^2.6.1",
@@ -11,6 +12,7 @@
     "discord.js": "^12.0.2",
     "dotenv": "^8.2.0",
     "enmap": "^5.2.4",
+    "humanize-duration": "^3.22.0",
     "luxon": "^1.22.2",
     "moment": "^2.24.0",
     "mysql2": "^2.1.0",
@@ -21,7 +23,8 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@types/common-tags": "^1.8.0"
+    "@types/common-tags": "^1.8.0",
+    "@types/humanize-duration": "^3.18.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

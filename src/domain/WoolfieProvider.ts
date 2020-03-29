@@ -256,9 +256,57 @@ class WoolfieProvider {
      * 
      * 
      */
-    public async createGuild(guildID: string, guildName: string, welcomeMsg: string, welcomeChannel: string, lvlUpMsg: string, lvlUpChannel:string) {
+    public async createGuild(guildID: string, guildName: string, welcomeMsg: string, welcomeChannel: string, lvlUpMsg: string, lvlUpChannel:string): Promise<boolean> {
         try {
             await sequelize.models.guilds.create({guildID:guildID,guildName:guildName,welcomeMsg:welcomeMsg,welcomeChannel:welcomeChannel,lvlUpMsg:lvlUpMsg,lvlUpChannel:lvlUpChannel})
+        } catch (error) {
+            return false + error;
+        }
+        return true;
+    }
+
+    /**
+     * Функция которая создает сервер в БД.
+     * 
+     * 
+     */
+    public async createCooldown(guildID: string, userID: string, cooldownType: string, expiresAt: any): Promise<boolean> {
+        try {
+            await sequelize.models.cooldowns.create({guildID:guildID,userID:userID,cooldownType:cooldownType,expiresAt:expiresAt})
+        } catch (error) {
+            return false + error;
+        }
+        return true;
+    }
+
+    /**
+     * Функция для получения информации о профиле пользователя.
+     * 
+     * @param guildID строка с айди сервера.
+     * @param userID строка с идентификатором пользователя.
+     * @returns Возвращает Promise<Object> с данными профиля, в противном случае возвращает null.
+     */
+    public async getCooldown(guildID: string, userID: string, cooldownType: string): Promise<any> {
+        try {
+            let data: Promise<object> = await sequelize.models.cooldowns.findOne({where:{guildID:guildID,userID:userID,cooldownType:cooldownType}})
+            if(data){
+                return data
+            }else{
+                return null
+            }            
+        } catch (error) {
+            return console.error(error)
+        }
+    }
+
+    /**
+     * Функция которая создает сервер в БД.
+     * 
+     * 
+     */
+    public async deleteCooldown(guildID: string, userID: string, cooldownType: string): Promise<boolean> {
+        try {
+            await sequelize.models.cooldowns.destroy({where:{guildID:guildID,userID:userID,cooldownType:cooldownType}})
         } catch (error) {
             return false + error;
         }
