@@ -16,10 +16,11 @@ class Balance extends Command {
     }
 
     async run(message: Message, args: Array<string>) {
-        var profile = await client.provider.getProfile(message.guild!.id,message.author.id)
+        var member: any = await client.provider.getMember(message, args.join(" "));
+        var profile = await client.provider.getProfile(message.guild!.id,member.id)
         var bankMax = 10000 + (5000 * profile.bankLvl);
         let string;
-        let cd = await client.provider.getCooldown(message.guild!.id,message.author.id,"DAILY");
+        let cd = await client.provider.getCooldown(message.guild!.id,member.id,"DAILY");
         if(cd == null) {
             string = "Пора забрать бонус!"
         }else{
@@ -31,7 +32,7 @@ class Balance extends Command {
             }            
         }        
         const embed = new MessageEmbed()
-            .setTitle(`💰Банк пользователя ${message.member?.displayName}`)
+            .setTitle(`💰Банк пользователя ${member.displayName}`)
             .setDescription(`🏦**Баланс:** ${profile.bank}/${bankMax}\n💸**Наличные:** ${profile.coins}\n⏰**Ежедневный бонус:** \`${string}\``)
             .setTimestamp()
             .setFooter(`Woolfie 2020 Все права загавканы.`,(message.guild?.iconURL({format:'png'}) as any))

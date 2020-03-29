@@ -1,7 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { WoolfieClient } from "../../domain/WoolfieClient";
-const Enmap = require('enmap')
-const ops = new Enmap({name: 'test'})
+const ops = new Map();
 
 export = async (client: WoolfieClient, message: Message): Promise<void> => {
     if(message.author.bot) return;

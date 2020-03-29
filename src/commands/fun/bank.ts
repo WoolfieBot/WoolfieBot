@@ -26,7 +26,7 @@ class Bank extends Command {
             message.channel.send(`Вы успешно совершили перевод на счёт банка в размере **${Math.round(parseInt(args[1]))}** монет!`)
         }
         if(args[0] == "withdraw"){
-            if(parseInt(profile.bank) + parseInt(args[1]) > bankMax || parseInt(args[1]) < 1  || parseInt(profile.bank) < parseInt(args[1])) return message.channel.send(`Сумму которую вы пытаетесь снять больше вашего баланса или меньше \`1\` монеты! Ваш баланс: \`${profile.bank}\`.`)
+            if(parseInt(args[1]) < 1  || parseInt(profile.bank) < parseInt(args[1])) return message.channel.send(`Сумму которую вы пытаетесь снять больше вашего баланса или меньше \`1\` монеты! Ваш баланс: \`${profile.bank}\`.`)
             let k = parseInt(profile.bank) - parseInt(args[1])
             await client.provider.updateRanks(message.guild!.id,message.author.id,{coins:Math.round(parseInt(args[1]))})
             await client.provider.updateProfile(message.guild!.id,message.author.id,{bank:Math.round(k)})
