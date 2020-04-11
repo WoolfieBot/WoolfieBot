@@ -13,7 +13,7 @@ class CreatePass extends Command {
     }
 
     async run(message: Message, args: Array<string>) {
-
+        
     }
 }
 
