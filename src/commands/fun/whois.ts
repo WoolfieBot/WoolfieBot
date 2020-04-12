@@ -37,7 +37,7 @@ class WhoIs extends Command {
             **> Роли:** ${roles}
             **> О себе:** ${profile.about}`, true)
 
-            .addField('  Информация о пользователе:', stripIndents`**> ID:** ${member.user.id}
+            .addField('Информация о пользователе:', stripIndents`**> ID:** ${member.user.id}
             **> Имя пользователя:** ${member.user.username}
             **> Тег:** ${member.user.tag}
             **> Создан:** ${created}`, true)

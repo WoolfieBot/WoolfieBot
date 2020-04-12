@@ -3,6 +3,7 @@ import { Message } from "discord.js";
 import ytdl from "ytdl-core";
 import { client } from "../../main";
 import { WoolfieClient } from "../../domain/WoolfieClient";
+import search from "yt-search";
 
 class Play extends Command {
     constructor(){
@@ -24,12 +25,10 @@ class Play extends Command {
         let validate = await ytdl.validateURL(args[0]);
 
         if (!validate) {
-
-            let commandFile = require(`./search.js`);
-            return commandFile.run(client, message, args, ops).catch(console.error);
-
+            return message.channel.send('Ты пидор ебучий нужна ссылка а не название');
         }
-    } catch(err) {
+
+    }catch(err) {
         return console.log(err)
     }
     let data = ops.get(message.guild!.id) || {};
@@ -71,7 +70,7 @@ class Play extends Command {
             fetched.queue.shift();
         
             if (fetched.queue.length > 0) {
-                
+                 
                 ops.set(dispatcher.guildID, fetched);
         
                 play(client, ops, fetched);

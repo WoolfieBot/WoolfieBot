@@ -312,6 +312,60 @@ class WoolfieProvider {
         }
         return true;
     }
+
+    /**
+     * Функция для получения информации из паспорта пользователя.
+     * 
+     * @param guildID строка с идентификатором сервера. 
+     * @param userID строка с идентификатором пользователя.
+     * @returns Promise<object> с информацией из паспорта пользователя.
+     */
+    public async getPassportInfo(guildID: string, userID: string): Promise<object> {
+        var data: Promise<object> = new Promise((resolve,reject) => {});
+        try {
+            data = await sequelize.models.passports.findOne({where:{guildID:guildID,userID:userID}})
+        } catch (error) {
+            return data + error;
+        }
+        return data;
+    }
+
+    /**
+     * Функция которая создает сервер в БД.
+     * 
+     * 
+     */
+    public async updatePassportInfo(guildID: string, userID: string, cooldownType: string): Promise<boolean> {
+        try {
+            await sequelize.models.cooldowns.destroy({where:{guildID:guildID,userID:userID,cooldownType:cooldownType}})
+        } catch (error) {
+            return false + error;
+        }
+        return true;
+    }
+
+    /**
+     * Функция которая создает паспорт в БД.
+     * 
+     * @param guildID строка с идентификатором сервера.
+     * @param userID строка с идентификатором пользователя.
+     * @param name строка с игровым именем пользователя.
+     * @param surname строка с игровой фамилией пользователя.
+     * @param birthday строка с игровой датой рождения пользователя. Пример: 2020-02-19.
+     * @param sex число с игровым полом пользователя. Пример: 0 = Мужской, 1 = Женский.
+     * @param age строка с игровым возрастом пользователя.
+     * @param bio строка с игровой краткой биографией пользователя.
+     * @param photo строка с сылкой на игровую фотографию паспорта пользователя.
+     * @returns Promise<boolean> true при успешном создании паспорта, в противном случае false.
+     */
+    public async createPassport(guildID: string, userID: string, name: string, surname: string, birthday: string, sex: number, age: string, bio: string, photo: string): Promise<boolean> {
+        try {
+            await sequelize.models.passports.create({guildID:guildID,userID:userID,name:name,surname:surname,birthday:birthday,sex:sex,age:age,bio:bio,photo:photo})
+        } catch (error) {
+            return false + error;
+        }
+        return true;
+    }
     
 }
 
