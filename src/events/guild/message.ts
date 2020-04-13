@@ -1,12 +1,13 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { WoolfieClient } from "../../domain/WoolfieClient";
+import { GuildObject } from "../../domain/ObjectModels";
 const ops = new Map();
 
 export = async (client: WoolfieClient, message: Message): Promise<void> => {
     if(message.author.bot) return;
     if(message.guild == null) return;
 
-    var settings: any;
+    var settings: GuildObject;
     try {
         settings = await client.provider.getGuild(message.guild.id)
     } catch (error) {
@@ -53,16 +54,16 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
         if(messageCheckXp >= 2 && messageCheckXp <= 7){
             toUpdate.xp = 1488;
             toUpdate.coins = 1488;
-            if(profile.xp >= Math.floor(100 + 100 * 2.891 * parseInt(profile.lvl) + 1)){
-                let channel: any = message.guild.channels.cache.find(ch => ch.id == settings.lvlUpChannel)
-                let text = settings.lvlUpMsg
+            if(profile.xp >= Math.floor(100 + 100 * 2.891 * profile.lvl + 1)){
+                let channel: TextChannel = <TextChannel>message.guild.channels.cache.find(ch => ch.id == settings.lvlUpChannel)
+                let text: string = settings.lvlUpMsg
                 toUpdate.lvl = toUpdate.lvl + 1
-                if(settings.lvlUpEmbed == "1"){
+                if(settings.lvlUpEmbed == 1) {
                     let embed = new MessageEmbed()
                         .setDescription(text)
-                    channel.send(embed) 
+                    channel?.send(embed)
                 }else{
-                channel.send(text)
+                    channel?.send(text)
                 }
                 await client.provider.updateProfile(message.guild.id,message.author.id,{xp:"0"})
                 await client.provider.updateRanks(message.guild.id,message.author.id,toUpdate)

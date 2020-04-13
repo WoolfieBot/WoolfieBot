@@ -2,6 +2,7 @@ import { Message, MessageEmbed } from "discord.js";
 import { Command } from "../../domain/Command";
 import sequelize from "../../models/sequelize";
 import { client } from "../../main";
+import { UserProfileData } from "../../domain/ObjectModels";
 
 class Leaders extends Command {
     constructor(){
@@ -14,10 +15,10 @@ class Leaders extends Command {
         });
     }
     async run(message: Message, args: Array<string>) {
-        var top = await sequelize.models.profiles.findAll({where:{guildID:message.guild!.id} ,order:[['lvl','DESC']], limit: 10})
-        var string = "";    
-        for (let index = 0; index < top.length; index++) {
-            const element = top[index];
+        var top: Array<UserProfileData> = await sequelize.models.profiles.findAll({where:{guildID:message.guild!.id} ,order:[['lvl','DESC']], limit: 10})
+        var string: string = "";    
+        for (let index: number = 0; index < top.length; index++) {
+            const element: UserProfileData = top[index];
             if(index === 0){
                 string += `🌟 #1. ${element.userDisplayName}\n**Уровень:** ${element.lvl} | **Опыт:** ${element.xp} | 🍖 ${element.reputation} | 💰 ${element.coins}\n`
             }else{
@@ -28,7 +29,7 @@ class Leaders extends Command {
                 }
             }  
         }
-        const embed = new MessageEmbed()
+        const embed: MessageEmbed = new MessageEmbed()
             .setTitle(`🏆 Топ рейтинга участников ${message.guild?.name}`)
             .setDescription(string)
             .setTimestamp()

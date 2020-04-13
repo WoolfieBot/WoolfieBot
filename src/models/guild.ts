@@ -34,7 +34,7 @@ Guilds.init({
         allowNull: true
     },
     lvlUpEmbed: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER({length: 1}),
         allowNull: true
     },
     lvlUpChannel: {

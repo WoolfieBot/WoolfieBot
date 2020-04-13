@@ -1,6 +1,7 @@
 import { Command } from "../../domain/Command";
 import { Message } from "discord.js";
 import { client } from "../../main";
+import { NoteObject } from "../../domain/ObjectModels";
 
 class Note extends Command {
     constructor(){
@@ -18,10 +19,10 @@ class Note extends Command {
 
         if(args[0] === "all" && !args[1]){
             let string: string = "";
-            let data: any = await client.provider.getAllNotes(message.guild!.id)
+            let data: Array<NoteObject> = await client.provider.getAllNotes(message.guild!.id)
             for (const key in data) {
                 if (data.hasOwnProperty(key)) {
-                    const element = data[key];
+                    const element: NoteObject = data[key];
                     string += `${element.noteName}, `
                 }
             }
@@ -30,10 +31,10 @@ class Note extends Command {
         if(args[0] === "all" && args[1]){
             let string: string = "";
             let member: any = await client.provider.getMember(message, args.slice(1).join(" "))
-            let data: any = await client.provider.getAllUsersNote(message.guild!.id,member.user.id)
+            let data: Array<NoteObject> = await client.provider.getAllUsersNote(message.guild!.id,member.user.id)
             for (const key in data) {
                 if (data.hasOwnProperty(key)) {
-                    const element = data[key];
+                    const element: NoteObject = data[key];
                     string += `${element.noteName}, `
                 }
             }
@@ -42,7 +43,7 @@ class Note extends Command {
             }
             return message.channel.send(`Все записки пользователя **${member.nickname}**: ${string}`)
         }
-        let data: any = await client.provider.getNote(message.guild!.id, args.slice(0).join(" "))
+        let data: NoteObject = await client.provider.getNote(message.guild!.id, args.slice(0).join(" "))
         if(data){
             message.channel.send(data.note)
         }else{

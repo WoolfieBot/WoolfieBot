@@ -1,6 +1,6 @@
 import { Command } from "../../domain/Command";
 import { Message } from "discord.js";
-import { client, PREFIX } from "../../main";
+import { client } from "../../main";
 import { MessageEmbed } from "discord.js";
 
 class Help extends Command {
@@ -26,7 +26,7 @@ class Help extends Command {
                 .setColor(0x333333)
                 .setAuthor(`Список команд бота`, guildIcon)
                 .setTimestamp()
-                .setDescription(`**Префикс бота:** ${PREFIX}\n**Команда:** ${command.name}\n**Описание:** ${command.description || "Нет описания."}\n**Использование:** ${command.usage}\n**Псевдонимы:** ${command.aliases.join(", ") || "Н/Д"}`)
+                .setDescription(`**Префикс бота:** >>\n**Команда:** ${command.name}\n**Описание:** ${command.description || "Нет описания."}\n**Использование:** ${command.usage}\n**Псевдонимы:** ${command.aliases.join(", ") || "Н/Д"}`)
                 .setFooter("Тот самый бот", botAvatar)
                 message.channel.send(SHembed)
             }
@@ -45,7 +45,7 @@ class Help extends Command {
             .setAuthor(`Список команд бота`, guildIcon)
             .setThumbnail(botAvatar)
             .setTimestamp()
-            .setDescription(`Вот полный список команд которые доступны на данный момент! Что бы узнать подробное описание какой-то команды вернись на сервер и напиши >help <команда>\nПрефикс ботa: ${PREFIX}`)
+            .setDescription(`Вот полный список команд которые доступны на данный момент! Что бы узнать подробное описание какой-то команды вернись на сервер и напиши >help <команда>\nПрефикс ботa: >>`)
             .addField(`Команды:`, `\`${cmdName}\``)
             .setFooter("Тот самый бот", botAvatar)
             message.channel.send(embed).then(m => m.delete({timeout:30000}));

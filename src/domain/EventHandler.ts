@@ -8,7 +8,7 @@ const loadE = (client: WoolfieClient) : void => {
         const events = readdirSync(`./events/${folder}/`).filter(d => d.endsWith('.js'))
         for (let file of events) {
             const evt = require(`../events/${folder}/${file}`)
-            let eName = file.split(".")[0]
+            let eName: any = file.split(".")[0]
             client.on(eName, evt.bind(null, client))
         }
     })

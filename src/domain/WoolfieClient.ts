@@ -1,12 +1,11 @@
 import { Client } from "discord.js";
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import { Command } from "./Command";
 import { load } from './CommandHandler';
 import { loadE } from "./EventHandler";
 import { WoolfieProvider } from "./WoolfieProvider";
 
 class WoolfieClient extends Client {
-    [x: string]: any;
     
     public commands: Map<string, Command> =  new Map();
     public aliases: Map<string, Command> = new Map();
@@ -33,7 +32,7 @@ class WoolfieClient extends Client {
             .toLocaleUpperCase();
     }
 
-    private getCommands(): any {
+    private getCommands(): void {
         return load(this);
     }
 

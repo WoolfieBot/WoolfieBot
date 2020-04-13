@@ -1,8 +1,9 @@
 import { client } from "../../main";
 import { Command } from "../../domain/Command";
-import { Message, MessageAttachment } from "discord.js";
+import { Message, MessageAttachment, GuildMember } from "discord.js";
 import * as Canvas from "canvas";
 import sequelize from "../../models/sequelize";
+import { UserProfileData } from "../../domain/ObjectModels";
 
 class Rank extends Command {
     constructor(){
@@ -17,10 +18,10 @@ class Rank extends Command {
     async run(message: Message, args: Array<string>) {
         const canvas = Canvas.createCanvas(700, 180)
         const ctx = canvas.getContext('2d');
-        var member: any = await client.provider.getMember(message, args.join(" "));        
-        var stats = await client.provider.getProfile(message.guild!.id, member.id);
-        var guild = await client.provider.getGuild(message.guild!.id);
-        var top = await sequelize.models.profiles.findAll({where:{guildID:message.guild!.id}, order:[['lvl','DESC']]})
+        var member: GuildMember = await client.provider.getMember(message, args.join(" "));        
+        var stats: UserProfileData = await client.provider.getProfile(message.guild!.id, member.id);
+        var guild: any = await client.provider.getGuild(message.guild!.id);
+        var top: UserProfileData = await sequelize.models.profiles.findAll({where:{guildID:message.guild!.id}, order:[['lvl','DESC']]})
         function getRank(top:any){
             for (let index = 0; index < top.length; index++) {
                 const element = top[index];

@@ -37,17 +37,17 @@ Profiles.init({
         defaultValue: 'хто я?'
     },
     coins:{
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER({length:100}),
         allowNull: true,
         defaultValue: 0
     },
     bank:{
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER({length:100}),
         allowNull: true,
         defaultValue: 0
     },
     bankLvl:{
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER({length:20}),
         allowNull: true,
         defaultValue: 1
     },
@@ -57,7 +57,7 @@ Profiles.init({
         defaultValue: 0
     },
     xp:{
-        type: DataTypes.STRING(2000),
+        type: DataTypes.INTEGER({length:255}),
         allowNull: true,
         defaultValue: 0
     },

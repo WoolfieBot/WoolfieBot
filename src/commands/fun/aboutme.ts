@@ -2,6 +2,7 @@ import { Command } from "../../domain/Command";
 import { Message, MessageEmbed } from "discord.js";
 import { client } from "../../main";
 import { stripIndent } from "common-tags";
+import { UserProfileData } from "../../domain/ObjectModels";
 
 class AboutMe extends Command {
     constructor(){
@@ -14,8 +15,8 @@ class AboutMe extends Command {
 
     async run(message: Message, args: Array<string>) {
         if(!args[0]){
-            const profile = await client.provider.getProfile(message.guild!.id,message.author.id)
-            const embed = new MessageEmbed()
+            const profile: UserProfileData = await client.provider.getProfile(message.guild!.id,message.author.id)
+            const embed: MessageEmbed = new MessageEmbed()
                 .setAuthor(`Ваша информация о себе`)
                 .setDescription(stripIndent`${profile.about}
                 ---------------------------------------------------------------`)

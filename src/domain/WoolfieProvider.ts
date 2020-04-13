@@ -1,5 +1,6 @@
 import sequelize = require("../models/sequelize");
-import { Message } from "discord.js";
+import { Message, GuildMember } from "discord.js";
+import { UserProfileData, CooldownObject, GuildObject, NoteObject } from "./ObjectModels";
 
 class WoolfieProvider {
 
@@ -14,13 +15,14 @@ class WoolfieProvider {
      * @returns Возвращает Promise<Object> с данными о сервере.
      */
 
-    public async getGuild(guildID: string): Promise<any> {
-        let data: Promise<Object> = await sequelize.models.guilds.findOne({where:{guildID:guildID}});
-            if(data){
-                return data
-            }else{
-                return console.log(`Произошла ошибка при получении данных о сервере ID: ` + guildID)
-            }
+    public async getGuild(guildID: string): Promise<GuildObject> {
+        var data: Promise<GuildObject> = new Promise((resolve,reject) => {resolve(undefined)});
+        try {
+            data = await sequelize.models.guilds.findOne({where:{guildID:guildID}});
+        } catch (error) {
+            return data + error;
+        }
+        return data;
     }
     
     /**
@@ -30,13 +32,14 @@ class WoolfieProvider {
      * @param noteName строка с названием записки.
      * @returns возвращает Promise<Object> с названием, содержимым, автором записки. 
      */
-    public async getNote(guildID: string, noteName: string): Promise<any> {
-        let data: Promise<Object> = await sequelize.models.notes.findOne({where:{guildID:guildID,noteName:noteName}})
-        if(data){
-            return data
-        }else{
-            return null;
+    public async getNote(guildID: string, noteName: string): Promise<NoteObject> {
+        var data: Promise<NoteObject> = new Promise((resolve,reject) => {resolve(undefined)});
+        try {
+            data = await sequelize.models.notes.findOne({where:{guildID:guildID,noteName:noteName}}) 
+        } catch (error) {
+            return data + error;
         }
+        return data;
     }
 
     /**
@@ -61,15 +64,16 @@ class WoolfieProvider {
      * Функция которая находит все записки в БД.
      * 
      * @param guildID строка с айди сервера.
-     * @returns возвращает Promise<Object> с названием, содержимым, автором записки. 
+     * @returns возвращает Promise<Array<NoteObject>> с названием, содержимым, автором записки. 
      */
-    public async getAllNotes(guildID: string) : Promise<any> {
-        let data: Promise<Object> = await sequelize.models.notes.findAll({where:{guildID:guildID}})
-        if(data){
-            return data
-        }else{
-            return null;
+    public async getAllNotes(guildID: string) : Promise<Array<NoteObject>> {
+        var data: Promise<Array<NoteObject>> = new Promise((resolve,reject) => {resolve(undefined)});        
+        try {
+            data = await sequelize.models.notes.findAll({where:{guildID:guildID}}) 
+        } catch (error) {
+            return data + error;
         }
+        return data;
     }
 
     /**
@@ -77,15 +81,16 @@ class WoolfieProvider {
      * 
      * @param guildID строка с айди сервера.
      * @param creatorID строка с идентификатором пользователя.
-     * @returns возвращает Promise<Object> с названием, содержимым, автором записки. 
+     * @returns возвращает Promise<Array<NoteObject>> с названием, содержимым, автором записки.
      */
-    public async getAllUsersNote(guildID: string, creatorID: string): Promise<any> {
-        let data: Promise<Object> = await sequelize.models.notes.findAll({where:{guildID:guildID,creatorID:creatorID}})
-        if(data){
-            return data
-        }else{
-            return null;
+    public async getAllUsersNote(guildID: string, creatorID: string): Promise<Array<NoteObject>> {
+        var data: Promise<Array<NoteObject>> = new Promise((resolve,reject) => {resolve(undefined)});
+        try {
+            data = await sequelize.models.notes.findAll({where:{guildID:guildID,creatorID:creatorID}})
+        } catch (error) {
+            return data + error;
         }
+        return data;
     }
 
     /**
@@ -96,13 +101,14 @@ class WoolfieProvider {
      * @param noteName строка с названием записки.
      * @returns возвращает Promise<Object> с названием, содержимым, автором записки. 
      */
-    public async getUserNote(guildID: string, creatorID: string, noteName: string): Promise<any> {
-        let data: Promise<Object> = await sequelize.models.notes.findOne({where:{guildID:guildID,creatorID:creatorID,noteName:noteName}})
-        if(data){
-            return data
-        }else{
-            return null;
+    public async getUserNote(guildID: string, creatorID: string, noteName: string): Promise<NoteObject> {
+        var data: Promise<NoteObject> = new Promise((resolve,reject) => {resolve(undefined)});
+        try {
+            data = await sequelize.models.notes.findOne({where:{guildID:guildID,creatorID:creatorID,noteName:noteName}})
+        } catch (error) {
+            return data + error;
         }
+        return data;
     }
 
     /**
@@ -128,12 +134,12 @@ class WoolfieProvider {
      * @param message объект сообщения, нужен для варианта с упоминанем.
      * @param toFind строка с ником пользователя которого нужно найти.
      * @returns Возвращает объект Promise<member>.
-     * @example <WoolfieProvider>.getMember(message, "alowave")
+     * @example getMember(<Message>, "alowave")
      */
-    public async getMember(message: Message, toFind = ''): Promise<any> {
+    public async getMember(message: Message, toFind = ''): Promise<GuildMember> {
         toFind = toFind.toLowerCase();
 
-        let target: any = message.guild?.members.cache.get(toFind);
+        let target: GuildMember | undefined = message.guild?.members.cache.get(toFind);
         
         if (!target && message.mentions.members)
             target = message.mentions.members.first();
@@ -145,8 +151,8 @@ class WoolfieProvider {
             });
         }
             
-        if (!target) 
-            target = message.member;
+        if (!target)
+            target = <GuildMember>message.member;
             
         return target;
     }
@@ -174,17 +180,14 @@ class WoolfieProvider {
      * @param userID строка с идентификатором пользователя.
      * @returns Возвращает Promise<Object> с данными профиля, в противном случае возвращает null.
      */
-    public async getProfile(guildID: string, userID: string): Promise<any> {
-        try {
-            let data: Promise<object> = await sequelize.models.profiles.findOne({where:{guildID:guildID,userID:userID}})
-            if(data){
-                return data
-            }else{
-                return null
-            }            
+    public async getProfile(guildID: string, userID: string): Promise<UserProfileData> {
+        var data: Promise<UserProfileData> = new Promise((resolve,reject) => {resolve(undefined)});
+        try {            
+            data = await sequelize.models.profiles.findOne({where:{guildID:guildID,userID:userID}});
         } catch (error) {
-            return console.error(error)
+            return data + error;
         }
+        return data;
     }
 
     /**
@@ -210,7 +213,7 @@ class WoolfieProvider {
      * @param max максимальное число (не учитывается).
      * @returns Promise<number> рандомное число.
      */
-    public async getRandomInt(min: number, max: number) {
+    public async getRandomInt(min: number, max: number): Promise<number> {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min)) + min;
@@ -254,7 +257,12 @@ class WoolfieProvider {
     /**
      * Функция которая создает сервер в БД.
      * 
-     * 
+     * @param guildID строка с идентификатором сервера.
+     * @param guildName строка с наименованием сервера.
+     * @param welcomeMsg строка с текстом приветствия для сервера.
+     * @param lvlUpMsg строка с текстом поздравления с новым уровнем пользоваетля.
+     * @param lvlUpChannel строка с идентификатором сервера
+     * @returns Возвращает Promise<boolean> = true при успешном создании сервера, в противном случае false с ошибкой.
      */
     public async createGuild(guildID: string, guildName: string, welcomeMsg: string, welcomeChannel: string, lvlUpMsg: string, lvlUpChannel:string): Promise<boolean> {
         try {
@@ -266,11 +274,15 @@ class WoolfieProvider {
     }
 
     /**
-     * Функция которая создает сервер в БД.
+     * Функция позволяющая создать кулдаун для пользователя.
      * 
-     * 
+     * @param guildID строка с идентификатором сервера.
+     * @param userID строка с идентификатором пользователя.
+     * @param cooldownType строка с названием типом кулдауна.
+     * @param expiresAt строка с DateTime в ISO истечения кулдауна.
+     * @returns Возвращает Promise<boolean> = true при успешном создании кулдауна, в противном случае false с ошибкой.
      */
-    public async createCooldown(guildID: string, userID: string, cooldownType: string, expiresAt: any): Promise<boolean> {
+    public async createCooldown(guildID: string, userID: string, cooldownType: string, expiresAt: string): Promise<boolean> {
         try {
             await sequelize.models.cooldowns.create({guildID:guildID,userID:userID,cooldownType:cooldownType,expiresAt:expiresAt})
         } catch (error) {
@@ -280,29 +292,30 @@ class WoolfieProvider {
     }
 
     /**
-     * Функция для получения информации о профиле пользователя.
+     * Функция для получения кулдауна пользователя.
      * 
      * @param guildID строка с айди сервера.
      * @param userID строка с идентификатором пользователя.
-     * @returns Возвращает Promise<Object> с данными профиля, в противном случае возвращает null.
+     * @param cooldownType строка с типом кулдауна.
+     * @returns Возвращает Promise<CooldownObject> с данными кулдауна, в противном случае возвращает undefined.
      */
-    public async getCooldown(guildID: string, userID: string, cooldownType: string): Promise<any> {
+    public async getCooldown(guildID: string, userID: string, cooldownType: string): Promise<CooldownObject> {
+        var data: Promise<CooldownObject> = new Promise((resolve,reject) => {resolve(undefined)});
         try {
-            let data: Promise<object> = await sequelize.models.cooldowns.findOne({where:{guildID:guildID,userID:userID,cooldownType:cooldownType}})
-            if(data){
-                return data
-            }else{
-                return null
-            }            
+            data = await sequelize.models.cooldowns.findOne({where:{guildID:guildID,userID:userID,cooldownType:cooldownType}})            
         } catch (error) {
-            return console.error(error)
+            return data + error;
         }
+        return data;
     }
 
     /**
-     * Функция которая создает сервер в БД.
+     * Функция позволяющая удалить кулдаун пользователя из БД.
      * 
-     * 
+     * @param guildID строка с идентификатором сервера.
+     * @param userID строка с идентификатором пользователя.
+     * @param cooldownType строка с типом кулдауна.
+     * @example deleteCooldown(<Guild>.id,<GuildMember>.id,"DAILY") //true при успешном удалении false при ошибке.
      */
     public async deleteCooldown(guildID: string, userID: string, cooldownType: string): Promise<boolean> {
         try {
@@ -318,10 +331,10 @@ class WoolfieProvider {
      * 
      * @param guildID строка с идентификатором сервера. 
      * @param userID строка с идентификатором пользователя.
-     * @returns Promise<object> с информацией из паспорта пользователя.
+     * @returns Promise<CooldownObject> с информацией из паспорта пользователя.
      */
     public async getPassportInfo(guildID: string, userID: string): Promise<object> {
-        var data: Promise<object> = new Promise((resolve,reject) => {});
+        var data: Promise<object> = new Promise((resolve,reject) => {reject(null)});
         try {
             data = await sequelize.models.passports.findOne({where:{guildID:guildID,userID:userID}})
         } catch (error) {
@@ -331,9 +344,13 @@ class WoolfieProvider {
     }
 
     /**
-     * Функция которая создает сервер в БД.
+     * Функция позволяющая обновить данные паспорта пользователя.
      * 
-     * 
+     * @param guildID строка с идентификатором сервера.
+     * @param userID строка с идентификатором пользователя.
+     * @param updateObject объект с обновлением.
+     * @example updatePassportInfo(<guild>!.id,<user>!.id,{age:28})
+     * @returns Promise<boolean> при успешном обновлении информации, в противном случае false.
      */
     public async updatePassportInfo(guildID: string, userID: string, cooldownType: string): Promise<boolean> {
         try {

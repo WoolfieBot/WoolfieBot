@@ -30,7 +30,7 @@ Passports.init({
         allowNull: false
     },
     age:{
-        type: DataTypes.STRING(100),
+        type: DataTypes.INTEGER({length:100}),
         allowNull: false
     },
     bio:{
@@ -46,12 +46,12 @@ Passports.init({
         allowNull: false
     },
     law:{
-        type: DataTypes.STRING(100),
-        defaultValue: "100",
+        type: DataTypes.INTEGER({length:100}),
+        defaultValue: 100,
         allowNull: true
     },
     driverLicense:{
-        type: DataTypes.TINYINT(),
+        type: DataTypes.TINYINT({length:1}),
         defaultValue: 0,
         allowNull: true
     },

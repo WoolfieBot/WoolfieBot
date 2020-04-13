@@ -16,6 +16,8 @@ class Play extends Command {
     }
 
     async run(message: Message, args: string[], cmd: string, ops: any) {
+        //Я ебал рот этого ебучего модуля идёт он нахуй
+        
         if (!message.member?.voice.channel) return message.channel.send('Вы должны быть в голосовом канале.')
 
         if (!args[0]) return message.channel.send('Сначала укажите ссылку для проигрывания.');
