@@ -9,7 +9,7 @@ class AboutMe extends Command {
         super({
             name: "aboutme",
             description: "Команда которой вы можете изменить информацию о себе.",
-            category: "fun"
+            category: "info"
         });
     }
 

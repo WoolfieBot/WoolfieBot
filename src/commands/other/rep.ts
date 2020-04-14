@@ -11,7 +11,7 @@ class Rep extends Command {
             name: "reputation",
             description: "Команда которой вы можете поднять репутацию одного из пользователей. Можно использовать только раз в 6 часов!",
             aliases: ["rep","respect"],
-            category: "fun",
+            category: "other",
             usage: ">reputatuin [Ник или упоминание пользователя]"
         });
     }

@@ -11,7 +11,7 @@ class Balance extends Command {
             name: "balance",
             description: "Команда для проверки баланса налички и банка.",
             aliases: ["b","bal"],
-            category: "fun",
+            category: "info",
             usage: ">balance"
         });
     }

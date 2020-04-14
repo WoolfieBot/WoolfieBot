@@ -11,7 +11,7 @@ class Daily extends Command {
             name: "daily",
             description: "Введите данную команду что бы получить бонус в виде монет! Можно получить только раз в 12 часов.",
             aliases: ["d","bonus","dy"],
-            category: "fun",
+            category: "other",
             usage: ">daily"
         });
     }

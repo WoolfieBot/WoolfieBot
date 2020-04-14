@@ -13,11 +13,9 @@ const load = (client: WoolfieClient):void => {
         for(let file of commandFiles){
             const pull = require(`../commands/${folder}/${file}`)
             const cmd: Command = new pull(client)
-            client.category.forEach(x => {
-                if(cmd.category !== x){
-                    throw new Error('Такой котегории не существует.')
-                }
-            });
+            if(client.category.indexOf(cmd.category) == -1) {
+                throw new Error('Такой котегории не существует.\n' + cmd.name + ": " + cmd.category);
+            }
             client.commands.set(cmd.name, cmd);
             if(cmd.aliases){
                 cmd.aliases.forEach((alias: string) => {

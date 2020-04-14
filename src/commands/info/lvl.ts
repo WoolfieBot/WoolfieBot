@@ -11,7 +11,7 @@ class Rank extends Command {
             name: "rank",
             usage: ">rank",
             description: "Команда которая показывает ваш профиль левелинга на данном сервере.",
-            category: "fun",
+            category: "info",
             aliases: ["lvl","r"]
         });
     }    

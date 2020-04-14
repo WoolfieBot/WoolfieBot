@@ -10,7 +10,7 @@ class Leaders extends Command {
             name: "leaders",
             usage: ">leaders",
             description: "Команда позволяющая увидеть топ самых активных пользователей сервера!",
-            category: "fun",
+            category: "info",
             aliases: ["top","lead"]
         });
     }

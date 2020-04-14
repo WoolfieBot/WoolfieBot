@@ -9,7 +9,7 @@ class Eval extends Command {
             name: "eval",
             usage: ">eval [Код]",
             description: "Команда для тестирования кода, доступна только разработчику.",
-            category: "fun",
+            category: "stuff",
             aliases: ["e","ev"]
         });
     }

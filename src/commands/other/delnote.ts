@@ -8,7 +8,7 @@ class DelNote extends Command {
             name: "delnote",
             usage: ">delnote [название записки]",
             description: "Команда удаляющая вашу записку.",
-            category: "fun",
+            category: "other",
             aliases: ["dn","deln"]  
         });
     }

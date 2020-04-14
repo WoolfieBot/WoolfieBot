@@ -9,7 +9,7 @@ class Note extends Command {
             name: "note",
             usage: ">note {название записки}, >note all, >note all {упоминание пользователя}",
             description: "Команда которая выдает конкретную записку, все записки сервера и все записки пользователя.",
-            category: "fun",
+            category: "other",
             aliases: ["n","nt"]
         });
     }
@@ -25,6 +25,9 @@ class Note extends Command {
                     const element: NoteObject = data[key];
                     string += `${element.noteName}, `
                 }
+            }
+            if(string.length == 0){
+                return message.channel.send(`На данном сервере еще нет записок! Станьте первым кто напишет её!\nСправка по созданию \`>help addnote\``)
             }
             return message.channel.send(`Все записки для сервера **${message.guild?.name}**: ${string}`)
         }

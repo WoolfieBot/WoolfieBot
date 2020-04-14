@@ -8,7 +8,7 @@ class Editnote extends Command {
             name: "editnote",
             usage: ">editnote {Название записки} {Изменённое содержимое}",
             description: "Команда которая изменяет ваши записки.",
-            category: "fun",
+            category: "other",
             aliases: ["edn","enote"]
         });
     }

@@ -8,7 +8,7 @@ class Bank extends Command {
         super({
             name: "bank",
             description: "Команда для взаимодействия с вашим банком. Переводите деньги в банк, для того что бы у вас их не смогли украсть!",
-            category: "fun",
+            category: "other",
             usage: ">bank withdraw [Количество денег которое хотите вывести], >bank deposit [Количество денег которое хотите перевести на свой счёт]"
         });
     }

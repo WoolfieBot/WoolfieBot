@@ -10,7 +10,7 @@ class WhoIs extends Command {
             name: "whois",
             description: "Показывает информацию об определенном пользователе.",
             usage: ">whois [Упоминание или ник пользователя]",
-            category: "fun",
+            category: "info",
             aliases: ["userinfo","user","ws"]
         });
     }

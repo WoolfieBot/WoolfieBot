@@ -9,7 +9,7 @@ class WoolfieClient extends Client {
     
     public commands: Map<string, Command> =  new Map();
     public aliases: Map<string, Command> = new Map();
-    public category: Array<string> = ["fun"];
+    public category: Array<string> = ["fun","info","moderation","other","stuff","works"];
     public provider: WoolfieProvider;
 
     constructor(token: any){

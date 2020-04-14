@@ -8,7 +8,7 @@ class AddNote extends Command {
             name: "addnote",
             usage: ">addnote [{название записки}] [содержимое записки]",
             description: "Команда создающая записку.",
-            category: "fun",
+            category: "other",
             aliases: ["an","addn"]
         });
     }

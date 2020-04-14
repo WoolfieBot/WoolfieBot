@@ -6,7 +6,7 @@ class Test extends Command {
         super({
             name: "test",
             description: "Test command",
-            category: "fun"
+            category: "stuff"
         });
     }
 

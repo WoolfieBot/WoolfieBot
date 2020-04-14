@@ -3,7 +3,6 @@ import { Message } from "discord.js";
 import ytdl from "ytdl-core";
 import { client } from "../../main";
 import { WoolfieClient } from "../../domain/WoolfieClient";
-import search from "yt-search";
 
 class Play extends Command {
     constructor(){
