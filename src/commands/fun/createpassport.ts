@@ -17,6 +17,7 @@ class CreatePass extends Command {
     } 
 
     async run(message: Message, args: Array<string>) {
+        if(await client.provider.getPassportInfo(message.guild!.id,message.author.id)) return message.channel.send(`У вас уже есть паспорт! Вы не можете создать еще один!`)
         if(isDone.get(message.guild?.id) !== undefined) return message.channel.send("Кто то уже выполняет регистрацию! Дождитесь пока её окончат.")
         isDone.set(message.guild?.id, message.author.id);
         const info = new Map();

@@ -334,7 +334,7 @@ class WoolfieProvider {
      * @returns Promise<CooldownObject> с информацией из паспорта пользователя.
      */
     public async getPassportInfo(guildID: string, userID: string): Promise<object> {
-        var data: Promise<object> = new Promise((resolve,reject) => {reject(null)});
+        var data: Promise<object> = new Promise((resolve,reject) => {resolve(undefined)});
         try {
             data = await sequelize.models.passports.findOne({where:{guildID:guildID,userID:userID}})
         } catch (error) {

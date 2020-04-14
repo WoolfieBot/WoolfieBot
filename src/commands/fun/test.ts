@@ -1,6 +1,5 @@
 import { Command } from "../../domain/Command";
 import { Message } from "discord.js";
-import { client } from "../../main";
 
 class Test extends Command {
     constructor(){
