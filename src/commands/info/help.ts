@@ -51,7 +51,7 @@ class Help extends Command {
                     embedString1 += `\n**> ${element.toUpperCase()}:**`
                 }                
                 client.commands.forEach(x => {
-                    if(i >= 3) {
+                    if(i > 3) {
                         if(x.category == element){
                             embedString2 += `\n**${x.name.charAt(0).toUpperCase() + x.name.slice(1)}**: ${x.description}\n`
                         }
