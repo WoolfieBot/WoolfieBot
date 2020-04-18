@@ -1,11 +1,17 @@
 import sequelize = require("../models/sequelize");
 import { Message, GuildMember } from "discord.js";
-import { UserProfileData, CooldownObject, GuildObject, NoteObject } from "./ObjectModels";
+import { UserProfileData, CooldownObject, GuildObject, NoteObject, PunishmentObject } from "./ObjectModels";
+import { UnMuteWorker } from "../workers/UnMuteService";
+import { client } from "../main";
 
 class WoolfieProvider {
 
     public init() {
+        //Инициация моделей
         require('../models/index')
+
+        //Запуск воркеров
+        new UnMuteWorker().setWorker(client);
     }
 
     /**
@@ -383,7 +389,17 @@ class WoolfieProvider {
         }
         return true;
     }
-    
+
+    public async getActivePunishments(): Promise<Array<PunishmentObject>> {
+        var data: Promise<Array<PunishmentObject>> = new Promise((resolve,reject) => {undefined});
+        try {
+            data = await sequelize.models.Punishments.findAll({where:{active:1}});
+        } catch(error) {
+            return false + error;
+        }
+        if(data) return data;
+        return data;
+    }
 }
 
 export { WoolfieProvider }

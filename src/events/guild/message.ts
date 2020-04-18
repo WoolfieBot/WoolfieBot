@@ -1,6 +1,6 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { WoolfieClient } from "../../domain/WoolfieClient";
-import { GuildObject } from "../../domain/ObjectModels";
+import { GuildObject, UserProfileData } from "../../domain/ObjectModels";
 const ops = new Map();
 
 export = async (client: WoolfieClient, message: Message): Promise<void> => {
@@ -13,7 +13,7 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
     } catch (error) {
         return console.log(error)
     }
-    var profile;
+    var profile: UserProfileData;
     try {
         profile = await client.provider.getProfile(message.guild.id,message.author.id)
     } catch (error) {

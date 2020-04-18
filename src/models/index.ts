@@ -1,1 +1,1 @@
-["passports","guild","profiles","notes","cooldowns"].forEach(x => require(`../models/${x}`))
+["passports","guild","profiles","notes","cooldowns","punishments"].forEach(x => require(`../models/${x}`))

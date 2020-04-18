@@ -210,4 +210,36 @@ export class PassportObject {
         this.workLvl = data.workLvl ? data.workLvl : null;
         this.weaponLicense = data.weaponLicense ? data.weaponLicense : 0;
     }
+
+}
+
+interface PunishmentObjectData {
+    id: number;
+    guildID: string;
+    punishableID: string;
+    producerID: string;
+    reason: string;
+    punishedAt: Date;
+    expiresAt: Date;
+}
+
+export class PunishmentObject {
+
+    readonly id: number;
+    readonly guildID: string;
+    readonly punishableID: string;
+    readonly producerID: string;
+    readonly reason: string;
+    readonly punishedAt: Date;
+    readonly expiresAt: Date;
+
+    constructor(data: PunishmentObjectData) {
+        this.id = data.id;
+        this.guildID = data.guildID;
+        this.punishableID = data.punishableID;
+        this.producerID = data.producerID;
+        this.reason = data.reason;
+        this.punishedAt = data.punishedAt;
+        this.expiresAt = data.expiresAt;
+    }
 }
