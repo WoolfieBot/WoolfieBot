@@ -61,7 +61,7 @@ class Help extends Command {
                         }
                     }
                 })
-            });            
+            });
             Sembed.setColor(0x333333)
             .setAuthor(`Список команд бота`, guildIcon)
             .setThumbnail(botAvatar)

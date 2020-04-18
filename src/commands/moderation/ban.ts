@@ -12,7 +12,7 @@ class Ban extends Command {
     }
     
     async run(message: Message, args: Array<string>) {
-
+        
     }
 }
 
