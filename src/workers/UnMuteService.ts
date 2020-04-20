@@ -18,20 +18,20 @@ export class UnMuteWorker extends SimpleWorker {
         schedule('*/1 * * * *', async () => {
             console.log('[' + DateTime.local().toFormat("TT") + ']' + ' UnMuteWorker: Начата проверка на валидность наказаний...');
 
-            const punishments: Array<PunishmentObject> | undefined = await client.provider.getActivePunishments();
-
+            const punishments: Array<PunishmentObject> | undefined = await client.provider.getActivePunishments("TEMPMUTE");
+            
             if(punishments!.length > 0) {
                 punishments?.forEach(function(punishment: PunishmentObject) {
                     if((DateTime.fromJSDate(punishment.expiresAt).toMillis() - DateTime.fromJSDate(new Date()).toMillis()) <= 0) {
                         var guild: Guild = <Guild>client.guilds.cache.get(punishment.guildID);
-                        
+                            
                         if(guild.members.cache.get(punishment.punishableID)) {
                             let user: GuildMember = <GuildMember>guild.members.cache.get(punishment.punishableID);
                             let role: Role = <Role>guild.roles.cache.find(x => x.name == "Замьючен")
                             user.roles.remove(role)
                         }
-    
-                        sequelize.models.Punishments.update({active:0},{where:{punishableID:punishment.punishableID}})
+        
+                        sequelize.models.Punishments.update({active:0},{where:{id:punishment.id}})
                     }
                 })
             }

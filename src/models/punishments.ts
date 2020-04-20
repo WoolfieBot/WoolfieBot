@@ -21,6 +21,10 @@ Punishments.init({
         type: DataTypes.STRING(30),
         allowNull: false
     },
+    type:{
+        type: DataTypes.STRING(30),
+        allowNull: false
+    },
     reason:{
         type: DataTypes.STRING(2000),
         allowNull: false

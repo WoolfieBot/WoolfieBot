@@ -3,6 +3,7 @@ import { Message, GuildMember } from "discord.js";
 import { UserProfileData, CooldownObject, GuildObject, NoteObject, PunishmentObject } from "./ObjectModels";
 import { UnMuteWorker } from "../workers/UnMuteService";
 import { client } from "../main";
+import { UnBanWorker } from "../workers/UnBanService";
 
 class WoolfieProvider {
 
@@ -12,6 +13,7 @@ class WoolfieProvider {
 
         //Запуск воркеров
         new UnMuteWorker().setWorker(client);
+        new UnBanWorker().setWorker(client);
     }
 
     /**
@@ -390,10 +392,21 @@ class WoolfieProvider {
         return true;
     }
 
-    public async getActivePunishments(): Promise<Array<PunishmentObject>> {
+    public async getActivePunishments(punishmentType: string): Promise<Array<PunishmentObject>> {
         var data: Promise<Array<PunishmentObject>> = new Promise((resolve,reject) => {undefined});
         try {
-            data = await sequelize.models.Punishments.findAll({where:{active:1}});
+            data = await sequelize.models.Punishments.findAll({where:{active:1,type:punishmentType}});
+        } catch(error) {
+            return false + error;
+        }
+        if(data) return data;
+        return data;
+    }
+
+    public async getAllPunishments(guildID: string): Promise<Array<PunishmentObject>> {
+        var data: Promise<Array<PunishmentObject>> = new Promise((resolve,reject) => {undefined});
+        try {
+            data = await sequelize.models.Punishments.findAll({where:{guildID:guildID}});
         } catch(error) {
             return false + error;
         }

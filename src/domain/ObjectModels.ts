@@ -218,7 +218,9 @@ interface PunishmentObjectData {
     guildID: string;
     punishableID: string;
     producerID: string;
+    type: string;
     reason: string;
+    active: number;
     punishedAt: Date;
     expiresAt: Date;
 }
@@ -229,7 +231,9 @@ export class PunishmentObject {
     readonly guildID: string;
     readonly punishableID: string;
     readonly producerID: string;
+    readonly type: string;
     readonly reason: string;
+    readonly active: number;
     readonly punishedAt: Date;
     readonly expiresAt: Date;
 
@@ -238,7 +242,9 @@ export class PunishmentObject {
         this.guildID = data.guildID;
         this.punishableID = data.punishableID;
         this.producerID = data.producerID;
+        this.type = data.type;
         this.reason = data.reason;
+        this.active = data.active;
         this.punishedAt = data.punishedAt;
         this.expiresAt = data.expiresAt;
     }
