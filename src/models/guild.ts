@@ -45,6 +45,11 @@ Guilds.init({
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
+    },
+    isBlackListed:{
+        type:DataTypes.TINYINT(),
+        allowNull: true,
+        defaultValue: 0
     }
 },{
     sequelize: sequelize,

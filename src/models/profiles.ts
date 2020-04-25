@@ -80,6 +80,11 @@ Profiles.init({
         type: DataTypes.STRING(150),
         allowNull: true,
         defaultValue: null
+    },
+    isBlackListed:{
+        type: DataTypes.TINYINT(),
+        allowNull: true,
+        defaultValue: 0
     }
 },{
     sequelize: sequelize,

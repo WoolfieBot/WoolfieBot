@@ -13,12 +13,14 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
     } catch (error) {
         return console.log(error)
     }
+
     var profile: UserProfileData;
     try {
         profile = await client.provider.getProfile(message.guild.id,message.author.id)
     } catch (error) {
         return console.log(error)
     }
+
     if(profile == null){
         const roles = message.member?.roles.cache
         .filter(r => r.id !== message.guild?.id)
@@ -30,6 +32,17 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
     if(!message.member) message.guild.members.fetch(message)
     
     if(message.content.startsWith(">>")){
+
+    if(profile.isBlackListed == 1) {
+        message.channel.send(`Вы были добавлены в чёрный список бота.`)
+        return
+    }
+    
+    if(settings.isBlackListed == 1) {
+        message.channel.send(`Этот сервер был добавлен в чёрный список бота.`)
+        return
+    }
+
     const args: Array<string> = message.content.slice(">>".length).trim().split(/ +/g);
     const cmd: string = args.shift()!.toLowerCase();
     let command;
@@ -44,6 +57,11 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
         command.run(message, args, cmd, ops, client);
     }
     }
+
+    if(settings.isBlackListed == 1) return;
+    
+    if(profile.isBlackListed == 1) return;
+
     if(settings.isLvl == 1){
         var messageCheckXp: number = await client.provider.getRandomInt(1,15)
         var toUpdate = {

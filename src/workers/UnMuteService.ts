@@ -28,7 +28,9 @@ export class UnMuteWorker extends SimpleWorker {
                         if(guild.members.cache.get(punishment.punishableID)) {
                             let user: GuildMember = <GuildMember>guild.members.cache.get(punishment.punishableID);
                             let role: Role = <Role>guild.roles.cache.find(x => x.name == "Замьючен")
-                            user.roles.remove(role)
+                            if(role){
+                                user.roles.remove(role)
+                            }
                         }
         
                         sequelize.models.Punishments.update({active:0},{where:{id:punishment.id}})

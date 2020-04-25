@@ -38,6 +38,7 @@ interface CooldownObjectData {
     lvlUpEmbed?: number | null;
     lvlUpChannel: string;
     isLvl?: number | null;
+    isBlackListed?: number | null;
 }
 
 export class GuildObject {
@@ -52,6 +53,7 @@ export class GuildObject {
    readonly lvlUpEmbed: number | null;
    readonly lvlUpChannel: string;
    readonly isLvl: number | null;
+   readonly isBlackListed: number | null;
 
     constructor(data: CooldownObjectData) {
 
@@ -65,6 +67,7 @@ export class GuildObject {
         this.lvlUpEmbed = data.lvlUpEmbed ? data.lvlUpEmbed : 0;
         this.lvlUpChannel = data.lvlUpChannel;
         this.isLvl = data.isLvl ? data.isLvl : 0;
+        this.isBlackListed = data.isBlackListed ? data.isBlackListed : 0;
     }
 }
 
@@ -85,6 +88,7 @@ interface ProfileData {
     lastActivityMessageChannel?: string | null;
     lastActivityVoice?: Date | null;
     lastActivityVoiceChannel?: string | null;
+    isBlackListed?: number | null;
 }
 
 export class UserProfileData {
@@ -105,6 +109,7 @@ export class UserProfileData {
    readonly lastActivityMessageChannel: string;
    readonly lastActivityVoice: Date;
    readonly lastActivityVoiceChannel: string;
+   readonly isBlackListed: number | null;
 
     constructor(data: ProfileData) {
         
@@ -124,6 +129,7 @@ export class UserProfileData {
         this.lastActivityMessageChannel = data.lastActivityMessageChannel ? data.lastActivityMessageChannel : "";
         this.lastActivityVoice = data.lastActivityVoice ? data.lastActivityVoice : new Date(0);
         this.lastActivityVoiceChannel = data.lastActivityVoiceChannel ? data.lastActivityVoiceChannel : "";
+        this.isBlackListed = data.isBlackListed ? data.isBlackListed : 0;
     }
 }
 
