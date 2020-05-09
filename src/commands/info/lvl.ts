@@ -27,7 +27,7 @@ class Rank extends Command {
                 const element = top[index];
                 if(element.userID == member.id){
                     return index + 1
-                }      
+                }
             }
         }
         if(guild.isLvl === 0) return message.channel.send(`На данном сервере отключён ранкинг.`)

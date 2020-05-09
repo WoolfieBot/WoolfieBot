@@ -46,14 +46,14 @@ class Steal extends Command {
             return await client.provider.updateProfile(message.guild!.id,member.id,{coins:(profile.coins - napizdil)})
         }else{
             var k: number = DateTime.fromJSDate(cd.expiresAt).toMillis() - DateTime.fromJSDate(new Date()).toMillis()
-            if( k < 0 ){ 
+            if( k < 0 ){
                 let random: number = await client.provider.getRandomInt(2,40)
                 if(chance.bool({likelihood: 10}) == true){
                     message.channel.send(`Воу! Джекпот! Вы своровали **60** процентов от всей суммы наличных пользователя!`)
                     random = 60;
                 }
                 let napizdil: number = Math.round(coins / 100 * random)
-                if(chance.bool({likelihood: 20}) == true){
+                if(chance.bool({likelihood: 20}) == true) {
                     time = DateTime.fromJSDate(new Date()).plus({hours: 12}).toISO()
                     message.channel.send(`О нет! Тебя поймали, ёбаный ты вор, из-за таких как ты, нахуй, россия НА КОЛЕНЯХ. ПУТИН ВПЕРЕД! РО ССИ Я!. Вы ничего не своровали и получили доп. время отката.`)
                     await client.provider.deleteCooldown(message.guild!.id,message.author.id,"STEAL")
