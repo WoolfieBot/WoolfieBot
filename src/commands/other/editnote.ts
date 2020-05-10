@@ -20,7 +20,7 @@ class Editnote extends Command {
         let noteName: Array<RegExpMatchArray> = Array.from(args.slice(0).join(" ").matchAll(/{(.*?)}/))
         if(await client.provider.getUserNote(message.guild!.id, message.author.id, noteName[0][1]) !== null){     
             let note: string = args.slice(0).join(" ").replace(noteName[0][0], "")
-            if(await client.provider.editNote(message.guild!.id,noteName[0][1],note) == true){
+            if(await client.provider.editNote(message.guild!.id, noteName[0][1], note)){
                 message.channel.send(`Записка успешно изменена!`)
             }else{
                 message.channel.send(`При редактировании записки произошла ошибка!`)

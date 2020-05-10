@@ -24,7 +24,6 @@ export class UnMuteWorker extends SimpleWorker {
                 punishments?.forEach(function(punishment: PunishmentObject) {
                     if((DateTime.fromJSDate(punishment.expiresAt).toMillis() - DateTime.fromJSDate(new Date()).toMillis()) <= 0) {
                         var guild: Guild = <Guild>client.guilds.cache.get(punishment.guildID);
-                            
                         if(guild.members.cache.get(punishment.punishableID)) {
                             let user: GuildMember = <GuildMember>guild.members.cache.get(punishment.punishableID);
                             let role: Role = <Role>guild.roles.cache.find(x => x.name == "Замьючен")
