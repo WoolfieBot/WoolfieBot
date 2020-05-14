@@ -1,8 +1,9 @@
 import { Command } from "../../domain/Command";
-import { Message, MessageEmbed, GuildMember, Role } from "discord.js";
+import {Message, MessageEmbed, GuildMember, Role, TextChannel} from "discord.js";
 import { client } from "../../main";
 import { stripIndents } from "common-tags"
 import { UserProfileData } from "../../domain/ObjectModels";
+import { DateTime } from "luxon";
 
 class WhoIs extends Command {
     constructor(){
@@ -25,6 +26,10 @@ class WhoIs extends Command {
             .filter((r: Role) => r.id !== message.guild!.id)
             .map((r: Role) => r).join(", ") || 'none';
 
+        const lastCh = await <TextChannel>message.guild?.channels.cache.get(<string>member.lastMessageChannelID);
+        const lastMsg = await lastCh?.messages.fetch(<string>member.lastMessageID);
+        const last = new Date(lastMsg.createdTimestamp).toLocaleString();
+
         // User variables
         const created: string = new Date(member.user.createdAt).toLocaleString();
 
@@ -36,6 +41,7 @@ class WhoIs extends Command {
             .addField('Информация об участнике:  ', stripIndents`**> Отображаемое имя:** ${member.displayName}
             **> Зашёл на сервер:** ${joined}
             **> Роли:** ${roles}
+            **> Последняя активность в чате:** ${last}
             **> О себе:** ${profile.about}`, true)
 
             .addField('Информация о пользователе:', stripIndents`**> ID:** ${member.user.id}
@@ -45,7 +51,7 @@ class WhoIs extends Command {
             
             .setTimestamp()
 
-        message.channel.send(embed);
+        await message.channel.send(embed);
     }
 }
 

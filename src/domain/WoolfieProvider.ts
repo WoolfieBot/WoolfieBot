@@ -403,6 +403,17 @@ class WoolfieProvider {
         return data;
     }
 
+    public async getUserActivePunishment(guildID: string, punishmentType: string, userID: string): Promise<PunishmentObject> {
+        var data: Promise<PunishmentObject> = new Promise((resolve,reject) => {undefined});
+        try {
+            data = await sequelize.models.Punishments.findOne({where:{guildID:guildID,active:1,type:punishmentType,punishableID:userID}});
+        } catch(error) {
+            return false + error;
+        }
+        if(data) return data;
+        return data;
+    }
+
     public async getAllPunishments(guildID: string): Promise<Array<PunishmentObject>> {
         var data: Promise<Array<PunishmentObject>> = new Promise((resolve,reject) => {undefined});
         try {
@@ -412,6 +423,55 @@ class WoolfieProvider {
         }
         if(data) return data;
         return data;
+    }
+
+    public async ifAdminRole(guildID: string, authorID: string): Promise<Boolean> {
+        let data: GuildObject = await client.provider.getGuild(guildID);
+        let result: Promise<boolean> = new Promise((resolve) => {
+            resolve(false)
+        });
+        try {
+            if (!data.adminRoles) return result;
+            data.adminRoles?.split(" ").forEach(e => {
+                let guild = client.guilds.cache.get(guildID);
+                let user = guild?.members.cache.get(authorID);
+                if(user?.roles.cache.has(e)) {
+                 return result = new Promise((resolve) => {resolve(true)});
+                }
+            });
+        } catch (error) {
+            return false + error;
+        }
+        return result;
+    }
+
+    public async ifModerRole(guildID: string, authorID: string): Promise<Boolean> {
+        let data: GuildObject = await client.provider.getGuild(guildID);
+        let result: Promise<boolean> = new Promise((resolve) => {
+            resolve(false)
+        });
+        try {
+            if (!data.moderatorRoles) return result;
+            data.moderatorRoles?.split(" ").forEach(e => {
+                let guild = client.guilds.cache.get(guildID);
+                let user = guild?.members.cache.get(authorID);
+                if(user?.roles.cache.has(e)) {
+                    return result = new Promise((resolve) => {resolve(true)})
+                }
+            });
+        } catch (error) {
+            return false + error;
+        }
+        return result;
+    }
+
+    public async createPunisment(guildID: string, punishableID: string, producerID: string, type: string, reason: string, expiresAt: string): Promise<boolean> {
+        try {
+            sequelize.models.Punishments.create({guildID: guildID, punishableID: punishableID, producerID: producerID, type: type, reason: reason, expiresAt: expiresAt})
+        } catch (error) {
+          return false + error;
+        }
+        return true;
     }
 }
 

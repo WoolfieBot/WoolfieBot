@@ -34,6 +34,8 @@ interface CooldownObjectData {
     prefix?: string | null;
     welcomeMsg: string;
     welcomeChannel: string;
+    adminRoles: string | null;
+    moderatorRoles: string | null;
     lvlUpMsg: string;
     lvlUpEmbed?: number | null;
     lvlUpChannel: string;
@@ -49,6 +51,8 @@ export class GuildObject {
    readonly prefix: string | null;
    readonly welcomeMsg: string;
    readonly welcomeChannel: string;
+   readonly adminRoles: string | null;
+   readonly moderatorRoles: string | null;
    readonly lvlUpMsg: string;
    readonly lvlUpEmbed: number | null;
    readonly lvlUpChannel: string;
@@ -63,6 +67,8 @@ export class GuildObject {
         this.prefix = data.prefix ? data.prefix : ">";
         this.welcomeMsg = data.welcomeMsg;
         this.welcomeChannel = data.welcomeChannel;
+        this.adminRoles = data.adminRoles ? data.adminRoles : null;
+        this.moderatorRoles = data.moderatorRoles ? data.moderatorRoles : null;
         this.lvlUpMsg = data.lvlUpMsg;
         this.lvlUpEmbed = data.lvlUpEmbed ? data.lvlUpEmbed : 0;
         this.lvlUpChannel = data.lvlUpChannel;

@@ -29,6 +29,14 @@ Guilds.init({
         type: DataTypes.STRING,
         allowNull: true
     },
+    adminRoles: {
+    type: DataTypes.STRING(2048),
+        allowNull: true
+    },
+    moderatorRoles: {
+        type: DataTypes.STRING(2048),
+            allowNull: true
+    },
     lvlUpMsg: {
         type: DataTypes.STRING(2000),
         allowNull: true

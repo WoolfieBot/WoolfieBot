@@ -20,13 +20,13 @@ class AddNote extends Command {
         let noteName: Array<RegExpMatchArray> = Array.from(args.slice(0).join(" ").matchAll(/{(.*?)}/))
         if(noteName.length !== 0){
             let note: string = args.slice(0).join(" ").replace(noteName[0][0], "")
-            if(await client.provider.createNote(message.guild!.id, noteName[0][1], note, message.author.id) == true){
+            if(await client.provider.createNote(message.guild!.id, noteName[0][1], note, message.author.id)){
                 return message.channel.send(`Записка ${noteName[0][1]} успешно создана!`)
             }else{
                return message.channel.send(`Произошла ошибка при создании записки.`)
             }
         }else{     
-        if(await client.provider.createNote(message.guild!.id, args[0], args.slice(1).join(' '), message.author.id) == true){
+        if(await client.provider.createNote(message.guild!.id, args[0], args.slice(1).join(' '), message.author.id)){
             return message.channel.send(`Записка ${args[0]} успешно создана!`)
         }else{
            return message.channel.send(`Произошла ошибка при создании записки.`)

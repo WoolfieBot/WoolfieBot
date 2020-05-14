@@ -36,7 +36,7 @@ Punishments.init({
     },
     punishedAt:{
         type: DataTypes.DATE(),
-        allowNull: false
+        allowNull: true
     },
     expiresAt:{
         type: DataTypes.DATE(),

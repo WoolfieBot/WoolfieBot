@@ -23,7 +23,7 @@ export class UnBanWorker extends SimpleWorker {
             if(punishments!.length > 0) {
                 punishments?.forEach(function(punishment: PunishmentObject) {
                     if((DateTime.fromJSDate(punishment.expiresAt).toMillis() - DateTime.fromJSDate(new Date()).toMillis()) <= 0) {
-                        var guild: Guild = <Guild>client.guilds.cache.get(punishment.guildID);
+                        const guild: Guild = <Guild>client.guilds.cache.get(punishment.guildID);
 
                         if(guild.fetchBan(punishment.punishableID)) {
                             guild.members.unban(punishment.punishableID)

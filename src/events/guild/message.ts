@@ -63,12 +63,12 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
     if(profile.isBlackListed == 1) return;
 
     if(settings.isLvl == 1){
-        var messageCheckXp: number = await client.provider.getRandomInt(1,15)
-        var toUpdate = {
+        const messageCheckXp: number = await client.provider.getRandomInt(1, 15);
+        const toUpdate = {
             xp: 0,
             coins: 0,
             lvl: 0
-        }        
+        };
         if(messageCheckXp >= 2 && messageCheckXp <= 7){
             toUpdate.xp = 1488;
             toUpdate.coins = 1488;

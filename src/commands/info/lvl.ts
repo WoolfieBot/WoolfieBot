@@ -38,7 +38,7 @@ class Rank extends Command {
             await client.provider.createProfile(message.guild!.id,member.id,member.user.username,member!.displayName,roles)
             stats = await client.provider.getProfile(message.guild!.id,member.id)
         }
-        Canvas.registerFont('assets/fonts/9887.otf',{ family: 'VAG World' })
+        Canvas.registerFont('assets/fonts/VAG.otf',{ family: 'VAG World' })
         //@ts-ignore
         ctx.roundRect = function(x: number, y: number, w: number, h: number, r: number): any {
             if(w < 2 * r) r = w / 2;
@@ -59,7 +59,7 @@ class Rank extends Command {
         ctx.roundRect(canvas.width / 3.5,canvas.height / 1.4,canvas.width / 1.5,canvas.height / 4.2, 30).fill();
         ctx.fillStyle = "rgba(56,137,228,1)";
         const tavo = Math.floor(100 + 100 * 2.981 * (stats.lvl + 1))
-        var kavo = Math.floor(canvas.width / 1.5 * stats.xp / tavo)
+        let kavo = Math.floor(canvas.width / 1.5 * stats.xp / tavo);
         if(kavo < 35){
             kavo = 35
         }
@@ -82,7 +82,7 @@ class Rank extends Command {
         const avatar = await Canvas.loadImage(member.user.displayAvatarURL({format:'png'}));        
         ctx.drawImage(avatar, 20, 20, 150, 150);
         const attachment = new MessageAttachment(canvas.toBuffer(), 'ranking.png');        
-        message.channel.send(attachment);
+        await message.channel.send(attachment);
     }
 }
 

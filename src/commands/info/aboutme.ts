@@ -27,7 +27,7 @@ class AboutMe extends Command {
             return message.channel.send(embed)
         }
         if(args[0].length < 1) return message.channel.send(`Минимальная длинна 1 символ.`)
-        if(await client.provider.updateProfile(message.guild!.id,message.author.id,{about:args.slice(0).join(" ")}) === true){
+        if(await client.provider.updateProfile(message.guild!.id, message.author.id, {about: args.slice(0).join(" ")})){
             message.channel.send(`Информация о себе успешно изменена!`)
         }else{
             message.channel.send(`Произошла ошибкуа при изменении инофрмации о себе!`)

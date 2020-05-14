@@ -35,7 +35,7 @@ class Leaders extends Command {
             .setTimestamp()
             .setThumbnail((message.guild?.iconURL({format: 'png'}) as any))
             .setFooter(`Woolfie 2020 Все права загавканы.`,(client.user?.avatarURL({format: 'png'}) as any))
-        message.channel.send(embed)
+        await message.channel.send(embed)
     }
 }
 

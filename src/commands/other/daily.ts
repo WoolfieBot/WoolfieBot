@@ -22,18 +22,18 @@ class Daily extends Command {
         var string: string;
         if(cd == null) {
             await client.provider.updateRanks(message.guild!.id,message.author.id,{coins:500})
-            message.channel.send(`Вы успешно получили ежедневный бонус в виде **500 монет!** приходите снова через 12 часов ;)`)
+            await message.channel.send(`Вы успешно получили ежедневный бонус в виде **500 монет!** приходите снова через 12 часов ;)`)
             return await client.provider.createCooldown(message.guild!.id,message.author.id,"DAILY",time)
         }else{
             var k: number = DateTime.fromJSDate(cd.expiresAt).toMillis() - DateTime.fromJSDate(new Date()).toMillis()
             if( k < 0 ){ 
                 await client.provider.updateRanks(message.guild!.id,message.author.id,{coins:500})
-                message.channel.send(`Вы успешно получили ежедневный бонус в виде **500 монет!** приходите снова через 12 часов ;)`)
+                await message.channel.send(`Вы успешно получили ежедневный бонус в виде **500 монет!** приходите снова через 12 часов ;)`)
                 await client.provider.deleteCooldown(message.guild!.id,message.author.id,"DAILY")
                 return await client.provider.createCooldown(message.guild!.id,message.author.id,"DAILY",time)
             }else{
                 string = humanizeDuration(k,{language: "ru", delimiter: " и ", largest: 2, round: true})
-                message.channel.send(`Вы уже получали бонус недавно! Попробуйте снова через: \`${string}\``)
+                await message.channel.send(`Вы уже получали бонус недавно! Попробуйте снова через: \`${string}\``)
             }            
         }         
     }
