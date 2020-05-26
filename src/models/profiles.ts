@@ -61,6 +61,10 @@ Profiles.init({
         allowNull: true,
         defaultValue: 0
     },
+    items:{
+        type: DataTypes.STRING(2000),
+        allowNull: true
+    },
     reputation:{
         type: DataTypes.STRING(2000),
         allowNull: true,

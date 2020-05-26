@@ -18,10 +18,27 @@ export class UnMuteWorker extends SimpleWorker {
         schedule('*/1 * * * *', async () => {
             console.log('[' + DateTime.local().toFormat("TT") + ']' + ' UnMuteWorker: Начата проверка на валидность наказаний...');
 
-            const punishments: Array<PunishmentObject> | undefined = await client.provider.getActivePunishments("TEMPMUTE");
-            
-            if(punishments!.length > 0) {
-                punishments?.forEach(function(punishment: PunishmentObject) {
+            const punishmentsTemp: Array<PunishmentObject> | undefined = await client.provider.getActivePunishments("TEMPMUTE");
+            const punishmentsPerm: Array<PunishmentObject> | undefined = await client.provider.getActivePunishments("MUTE");
+
+            if(punishmentsPerm!.length > 0) {
+                punishmentsPerm?.forEach(function (punishment: PunishmentObject) {
+                    let guild: Guild;
+                    guild = <Guild>client.guilds.cache.get(punishment.guildID);
+                    if(guild.members.cache.get(punishment.punishableID)) {
+                        let user: GuildMember = <GuildMember>guild.members.cache.get(punishment.punishableID);
+                        let role: Role = <Role>guild.roles.cache.find(x => x.name == "WFMUTED")
+                        if(role) {
+                            if(!user.roles.cache.get(role.id)){
+                                user.roles.add(role)
+                            }
+                        }
+                    }
+                })
+            }
+
+            if(punishmentsTemp!.length > 0) {
+                punishmentsTemp?.forEach(function(punishment: PunishmentObject) {
                     let guild: Guild;
                     if((DateTime.fromJSDate(punishment.expiresAt).toMillis() - DateTime.fromJSDate(new Date()).toMillis()) <= 0) {
                         guild = <Guild>client.guilds.cache.get(punishment.guildID);
@@ -49,7 +66,7 @@ export class UnMuteWorker extends SimpleWorker {
                 })
             }
 
-            console.log('[' + DateTime.local().toFormat("TT") + ']' + ' UnMuteWorker: Проверка на валидность наказаний окончена. Проверенно: ' + punishments.length + ' наказаний.');
+            console.log('[' + DateTime.local().toFormat("TT") + ']' + ' UnMuteWorker: Проверка на валидность наказаний окончена. Проверенно: ' + punishmentsTemp.length + ' временных наказаний и ' + punishmentsPerm.length + ' перманентных наказаний.');
         })
     }
 }

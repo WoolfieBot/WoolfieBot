@@ -16,10 +16,9 @@ class Play extends Command {
 
     async run(message: Message, args: string[], cmd: string, ops: any) {
         //Я ебал рот этого ебучего модуля идёт он нахуй
+        if(!args[0]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help ${this.name}\`\`\``)
         
         if (!message.member?.voice.channel) return message.channel.send('Вы должны быть в голосовом канале.')
-
-        if (!args[0]) return message.channel.send('Сначала укажите ссылку для проигрывания.');
 
         try{
 
@@ -46,9 +45,9 @@ class Play extends Command {
             announceChannel: message.channel.id
         });
     
-        if (!data.dispatcher) play(client, ops, data)
+        if (!data.dispatcher) await play(client, ops, data)
         else {
-            message.channel.send(`Добавлено в очередь: ${info.title} | Заказано: ${message.author.tag}`)
+            await message.channel.send(`Добавлено в очередь: ${info.title} | Заказано: ${message.author.tag}`)
         }
 
         ops.set(message.guild!.id, data)
@@ -89,7 +88,7 @@ class Play extends Command {
     }
 catch(err){
 
-    message.channel.send(`Произошла ошибка ${err}`)
+    await message.channel.send(`Произошла ошибка ${err}`)
 
 }
     }

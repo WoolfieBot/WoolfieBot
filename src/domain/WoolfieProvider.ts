@@ -1,9 +1,10 @@
 import sequelize = require("../models/sequelize");
 import { Message, GuildMember } from "discord.js";
-import { UserProfileData, CooldownObject, GuildObject, NoteObject, PunishmentObject } from "./ObjectModels";
+import {UserProfileData, CooldownObject, GuildObject, NoteObject, PunishmentObject} from "./ObjectModels";
 import { UnMuteWorker } from "../workers/UnMuteService";
 import { client } from "../main";
 import { UnBanWorker } from "../workers/UnBanService";
+import {stringify} from "querystring";
 
 class WoolfieProvider {
 
@@ -413,6 +414,16 @@ class WoolfieProvider {
         if(data) return data;
         return data;
     }
+    public async updateUserActivePunishment(guildID: string, punishmentType: string, userID: string, toUpdate: object): Promise<Object> {
+        var data: Promise<Boolean> = new Promise((resolve,reject) => {resolve(false)});
+        try {
+            data = await sequelize.models.Punishments.update(toUpdate,{where:{guildID:guildID,active:1,type:punishmentType,punishableID:userID}});
+        } catch(error) {
+            return false + error;
+        }
+        if(data) return data;
+        return data;
+    }
 
     public async getAllPunishments(guildID: string): Promise<Array<PunishmentObject>> {
         var data: Promise<Array<PunishmentObject>> = new Promise((resolve,reject) => {undefined});
@@ -472,6 +483,17 @@ class WoolfieProvider {
           return false + error;
         }
         return true;
+    }
+
+    public format(formatObject:{user_mention?: string, guild_name?: string, lvl?: number, username?: string, text: string}) {
+        let text: string = formatObject.text;
+        formatObject.user_mention = `<@${formatObject.user_mention}>`
+        for(let k in formatObject) {
+            let r = new RegExp(`{{${k}}}`, "gi");
+            // @ts-ignore
+            text = text.replace(r, formatObject[k]);
+        }
+        return text;
     }
 }
 

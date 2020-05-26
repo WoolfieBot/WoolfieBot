@@ -37,7 +37,7 @@ class Balance extends Command {
             .setDescription(`🏦**Баланс:** ${profile.bank}/${bankMax}\n💸**Наличные:** ${profile.coins}\n⏰**Ежедневный бонус:** \`${string}\``)
             .setTimestamp()
             .setFooter(`Woolfie 2020 Все права загавканы.`,(message.guild?.iconURL({format:'png'}) as string))
-        message.channel.send(embed)
+        await message.channel.send(embed)
     }
 }
 export = Balance;

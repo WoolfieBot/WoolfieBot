@@ -2,7 +2,7 @@ import { SimpleWorker } from "./WorkerTemplate";
 import { WoolfieClient } from "../domain/WoolfieClient";
 import { PunishmentObject } from "../domain/ObjectModels";
 import { DateTime } from "luxon";
-import { Guild, GuildMember } from "discord.js";
+import { Guild } from "discord.js";
 import sequelize from "../models/sequelize";
 import { schedule } from "node-cron";
 

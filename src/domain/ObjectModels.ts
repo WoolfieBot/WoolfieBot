@@ -34,6 +34,7 @@ interface CooldownObjectData {
     prefix?: string | null;
     welcomeMsg: string;
     welcomeChannel: string;
+    loggingChannel: string | null;
     adminRoles: string | null;
     moderatorRoles: string | null;
     lvlUpMsg: string;
@@ -51,6 +52,7 @@ export class GuildObject {
    readonly prefix: string | null;
    readonly welcomeMsg: string;
    readonly welcomeChannel: string;
+   readonly loggingChannel: string | null;
    readonly adminRoles: string | null;
    readonly moderatorRoles: string | null;
    readonly lvlUpMsg: string;
@@ -67,6 +69,7 @@ export class GuildObject {
         this.prefix = data.prefix ? data.prefix : ">";
         this.welcomeMsg = data.welcomeMsg;
         this.welcomeChannel = data.welcomeChannel;
+        this.loggingChannel = data.loggingChannel ? data.loggingChannel : null;
         this.adminRoles = data.adminRoles ? data.adminRoles : null;
         this.moderatorRoles = data.moderatorRoles ? data.moderatorRoles : null;
         this.lvlUpMsg = data.lvlUpMsg;
@@ -90,6 +93,7 @@ interface ProfileData {
     bankLvl: number;
     lvl: number;
     xp: number;
+    items: string;
     reputation: string;
     lastActivityMessageChannel?: string | null;
     lastActivityVoice?: Date | null;
@@ -111,6 +115,7 @@ export class UserProfileData {
    readonly bankLvl: number;
    readonly lvl: number;
    readonly xp: number;
+   readonly items: string;
    readonly reputation: string;
    readonly lastActivityMessageChannel: string;
    readonly lastActivityVoice: Date;
@@ -131,6 +136,7 @@ export class UserProfileData {
         this.bankLvl = data.bankLvl;
         this.lvl = data.lvl;
         this.xp = data.xp;
+        this.items = data.items;
         this.reputation = data.reputation;
         this.lastActivityMessageChannel = data.lastActivityMessageChannel ? data.lastActivityMessageChannel : "";
         this.lastActivityVoice = data.lastActivityVoice ? data.lastActivityVoice : new Date(0);

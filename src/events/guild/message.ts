@@ -1,27 +1,27 @@
-import { Message, MessageEmbed, TextChannel } from "discord.js";
+import {Guild, GuildMember, Message, MessageEmbed, Role, TextChannel} from "discord.js";
 import { WoolfieClient } from "../../domain/WoolfieClient";
-import { GuildObject, UserProfileData } from "../../domain/ObjectModels";
+import {GuildObject, PunishmentObject, UserProfileData} from "../../domain/ObjectModels";
 const ops = new Map();
 
 export = async (client: WoolfieClient, message: Message): Promise<void> => {
     if(message.author.bot) return;
     if(message.guild == null) return;
 
-    var settings: GuildObject;
+    let settings: GuildObject;
     try {
         settings = await client.provider.getGuild(message.guild.id)
     } catch (error) {
         return console.log(error)
     }
 
-    var profile: UserProfileData;
+    let profile: UserProfileData;
     try {
         profile = await client.provider.getProfile(message.guild.id,message.author.id)
     } catch (error) {
         return console.log(error)
     }
 
-    if(profile == null){
+    if(profile == null) {
         const roles = message.member?.roles.cache
         .filter(r => r.id !== message.guild?.id)
         .map(r => r).join(", ") || 'none';
@@ -29,17 +29,17 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
         profile = await client.provider.getProfile(message.guild.id,message.author.id)
     }
     
-    if(!message.member) message.guild.members.fetch(message)
+    if(!message.member) await message.guild.members.fetch(message)
     
-    if(message.content.startsWith(">>")){
+    if(message.content.startsWith(">>")) {
 
     if(profile.isBlackListed == 1) {
-        message.channel.send(`Вы были добавлены в чёрный список бота.`)
+        await message.channel.send(`Вы были добавлены в чёрный список бота.`)
         return
     }
     
     if(settings.isBlackListed == 1) {
-        message.channel.send(`Этот сервер был добавлен в чёрный список бота.`)
+        await message.channel.send(`Этот сервер был добавлен в чёрный список бота.`)
         return
     }
 
@@ -47,10 +47,10 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
     const cmd: string = args.shift()!.toLowerCase();
     let command;
     if(cmd.length === 0) return;
-    if(client.commands.has(cmd)){
+    if(client.commands.has(cmd)) {
         command = client.commands.get(cmd);
     }
-    if(client.aliases.has(cmd)){
+    if(client.aliases.has(cmd)) {
         command = client.aliases.get(cmd)
     }
     if(command) {
@@ -58,9 +58,28 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
     }
     }
 
-    if(settings.isBlackListed == 1) return;
-    
-    if(profile.isBlackListed == 1) return;
+    let punishmentTemp = await client.provider.getUserActivePunishment(message.guild!.id, "TEMPMUTE", message.author.id)
+    let punishmentPerm = await client.provider.getUserActivePunishment(message.guild!.id, "MUTE", message.author.id)
+
+    if(punishmentTemp) {
+        if(message.guild.members.cache.get(punishmentTemp.punishableID)) {
+            let role: Role = <Role>message.guild.roles.cache.find(x => x.name == "WFMUTED")
+            if(role) {
+                await message.delete();
+                return
+            }
+        }
+    }
+
+    if(punishmentPerm) {
+        if(message.guild.members.cache.get(punishmentTemp.punishableID)) {
+            let role: Role = <Role>message.guild.roles.cache.find(x => x.name == "WFMUTED")
+            if(role) {
+                await message.delete();
+                return
+            }
+        }
+    }
 
     if(settings.isLvl == 1){
         const messageCheckXp: number = await client.provider.getRandomInt(1, 15);
@@ -72,9 +91,9 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
         if(messageCheckXp >= 2 && messageCheckXp <= 7){
             toUpdate.xp = 1488;
             toUpdate.coins = 1488;
-            if(profile.xp >= Math.floor(100 + 100 * 2.891 * profile.lvl + 1)){
+            if(profile.xp >= Math.floor(100 + 100 * 2.891 * profile.lvl + 1)) {
                 let channel: TextChannel = <TextChannel>message.guild.channels.cache.find(ch => ch.id == settings.lvlUpChannel)
-                let text: string = settings.lvlUpMsg
+                let text: string = client.provider.format({lvl:profile.lvl + 1,text:settings.lvlUpMsg, username: message.member?.displayName, user_mention: message.author.id, guild_name: message.guild.name})
                 toUpdate.lvl = toUpdate.lvl + 1
                 if(settings.lvlUpEmbed == 1) {
                     let embed = new MessageEmbed()

@@ -29,6 +29,11 @@ Guilds.init({
         type: DataTypes.STRING,
         allowNull: true
     },
+    loggingChannel: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: null
+    },
     adminRoles: {
     type: DataTypes.STRING(2048),
         allowNull: true

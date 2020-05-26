@@ -15,8 +15,12 @@ class Leaders extends Command {
         });
     }
     async run(message: Message, args: Array<string>) {
-        var top: Array<UserProfileData> = await sequelize.models.profiles.findAll({where:{guildID:message.guild!.id} ,order:[['lvl','DESC']], limit: 10})
-        var string: string = "";    
+        const top: Array<UserProfileData> = await sequelize.models.profiles.findAll({
+            where: {guildID: message.guild!.id},
+            order: [['lvl', 'DESC']],
+            limit: 10
+        });
+        let string: string = "";
         for (let index: number = 0; index < top.length; index++) {
             const element: UserProfileData = top[index];
             if(index === 0){
