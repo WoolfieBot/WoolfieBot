@@ -24,12 +24,12 @@ class Leaders extends Command {
         for (let index: number = 0; index < top.length; index++) {
             const element: UserProfileData = top[index];
             if(index === 0){
-                string += `🌟 #1. ${element.userDisplayName}\n**Уровень:** ${element.lvl} | **Опыт:** ${element.xp} | 🍖 ${element.reputation} | 💰 ${element.coins}\n`
+                string += `🌟 #1. ${element.userDisplayName !== "none" ? element.userDisplayName : element.username}\n**Уровень:** ${element.lvl} | **Опыт:** ${element.xp} | 🍖 ${element.reputation} | 💰 ${element.coins}\n`
             }else{
                 if (index <= 2){
-                    string += `⭐ #${index + 1}. ${element.userDisplayName}\n**Уровень:** ${element.lvl} | **Опыт:** ${element.xp} | 🍖 ${element.reputation} | 💰 ${element.coins}\n`  
+                    string += `⭐ #${index + 1}. ${element.userDisplayName !== "none" ? element.userDisplayName : element.username}\n**Уровень:** ${element.lvl} | **Опыт:** ${element.xp} | 🍖 ${element.reputation} | 💰 ${element.coins}\n`
                 }else{
-                    string += `#${index + 1}. ${element.userDisplayName}\n**Уровень:** ${element.lvl} | **Опыт:** ${element.xp} | 🍖 ${element.reputation} | 💰 ${element.coins}\n`
+                    string += `#${index + 1}. ${element.userDisplayName !== "none" ? element.userDisplayName : element.username}\n**Уровень:** ${element.lvl} | **Опыт:** ${element.xp} | 🍖 ${element.reputation} | 💰 ${element.coins}\n`
                 }
             }  
         }

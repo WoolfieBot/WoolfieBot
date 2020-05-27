@@ -27,6 +27,7 @@ class Buy extends Command {
             case "2":
                 if(profile.coins < 10000) return message.channel.send("Недостаточно наличных для совершения покупки!")
                     let objShield = JSON.parse(`{${profile.items}}`)
+                    if(objShield.shield.amount >= 1) return message.channel.send('Нельзя иметь больше 1 щита для наличных! Используйте уже имеющийся.')
                     objShield.shield.amount = parseInt(objShield.shield.amount) + 1;
                     await client.provider.updateProfile(message.guild!.id, message.author.id, {items:JSON.stringify(objShield).substr(1, JSON.stringify(objShield).length - 2), coins: profile.coins - 10000})
                     await message.channel.send('Вы успешно купили предмет **Щит для наличных**! Количество в инвентаре: ' + objShield.shield.amount)

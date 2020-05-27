@@ -1,6 +1,6 @@
-import {Guild, GuildMember, Message, MessageEmbed, Role, TextChannel} from "discord.js";
+import {Message, MessageEmbed, Role, TextChannel} from "discord.js";
 import { WoolfieClient } from "../../domain/WoolfieClient";
-import {GuildObject, PunishmentObject, UserProfileData} from "../../domain/ObjectModels";
+import {GuildObject, UserProfileData} from "../../domain/ObjectModels";
 const ops = new Map();
 
 export = async (client: WoolfieClient, message: Message): Promise<void> => {
@@ -24,13 +24,37 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
     if(profile == null) {
         const roles = message.member?.roles.cache
         .filter(r => r.id !== message.guild?.id)
-        .map(r => r).join(", ") || 'none';
-        await client.provider.createProfile(message.guild.id,message.author.id,message.author.username,message.member!.displayName,roles)
+        .map(r => r.id).join(",") || 'none';
+        let displayName = message.member!.displayName;
+        if(displayName == message.author.username) displayName = 'none';
+        await client.provider.createProfile(message.guild.id,message.author.id,message.author.username,displayName,roles)
         profile = await client.provider.getProfile(message.guild.id,message.author.id)
     }
     
     if(!message.member) await message.guild.members.fetch(message)
-    
+
+    let punishmentTemp = await client.provider.getUserActivePunishment(message.guild!.id, "TEMPMUTE", message.author.id)
+    let punishmentPerm = await client.provider.getUserActivePunishment(message.guild!.id, "MUTE", message.author.id)
+
+    if(punishmentTemp) {
+        if(message.guild.members.cache.get(punishmentTemp.punishableID)) {
+            let role: Role = <Role>message.guild.roles.cache.find(x => x.name == "WFMUTED")
+            if(role) {
+                await message.delete();
+                return
+            }
+        }
+    }
+
+    if(punishmentPerm) {
+        if(message.guild.members.cache.get(punishmentTemp.punishableID)) {
+            let role: Role = <Role>message.guild.roles.cache.find(x => x.name == "WFMUTED")
+            if(role) {
+                await message.delete();
+                return
+            }
+        }
+    }
     if(message.content.startsWith(">>")) {
 
     if(profile.isBlackListed == 1) {
@@ -58,29 +82,6 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
     }
     }
 
-    let punishmentTemp = await client.provider.getUserActivePunishment(message.guild!.id, "TEMPMUTE", message.author.id)
-    let punishmentPerm = await client.provider.getUserActivePunishment(message.guild!.id, "MUTE", message.author.id)
-
-    if(punishmentTemp) {
-        if(message.guild.members.cache.get(punishmentTemp.punishableID)) {
-            let role: Role = <Role>message.guild.roles.cache.find(x => x.name == "WFMUTED")
-            if(role) {
-                await message.delete();
-                return
-            }
-        }
-    }
-
-    if(punishmentPerm) {
-        if(message.guild.members.cache.get(punishmentTemp.punishableID)) {
-            let role: Role = <Role>message.guild.roles.cache.find(x => x.name == "WFMUTED")
-            if(role) {
-                await message.delete();
-                return
-            }
-        }
-    }
-
     if(settings.isLvl == 1){
         const messageCheckXp: number = await client.provider.getRandomInt(1, 15);
         const toUpdate = {
@@ -89,7 +90,12 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
             lvl: 0
         };
         if(messageCheckXp >= 2 && messageCheckXp <= 7){
-            toUpdate.xp = 1488;
+            let itemsObj = JSON.parse(`{${profile.items}}`)
+            if(itemsObj['xp_boost'].lastUse !== null) {
+                toUpdate.xp = 1488 * 1.5
+            } else {
+                toUpdate.xp = 1488;
+            }
             toUpdate.coins = 1488;
             if(profile.xp >= Math.floor(100 + 100 * 2.891 * profile.lvl + 1)) {
                 let channel: TextChannel = <TextChannel>message.guild.channels.cache.find(ch => ch.id == settings.lvlUpChannel)

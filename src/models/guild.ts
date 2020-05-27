@@ -59,8 +59,13 @@ Guilds.init({
         allowNull: true,
         defaultValue: 0
     },
-    isBlackListed:{
+    isBlackListed: {
         type:DataTypes.TINYINT(),
+        allowNull: true,
+        defaultValue: 0
+    },
+    isSaveInfo: {
+        type:DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
     }

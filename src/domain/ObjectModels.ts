@@ -42,6 +42,7 @@ interface CooldownObjectData {
     lvlUpChannel: string;
     isLvl?: number | null;
     isBlackListed?: number | null;
+    isSaveInfo?: number | null;
 }
 
 export class GuildObject {
@@ -60,6 +61,7 @@ export class GuildObject {
    readonly lvlUpChannel: string;
    readonly isLvl: number | null;
    readonly isBlackListed: number | null;
+   readonly isSaveInfo?: number | null;
 
     constructor(data: CooldownObjectData) {
 
@@ -77,6 +79,7 @@ export class GuildObject {
         this.lvlUpChannel = data.lvlUpChannel;
         this.isLvl = data.isLvl ? data.isLvl : 0;
         this.isBlackListed = data.isBlackListed ? data.isBlackListed : 0;
+        this.isSaveInfo = data.isSaveInfo ? data.isSaveInfo : 0;
     }
 }
 

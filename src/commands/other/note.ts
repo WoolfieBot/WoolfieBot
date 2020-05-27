@@ -48,9 +48,9 @@ class Note extends Command {
         }
         let data: NoteObject = await client.provider.getNote(message.guild!.id, args.slice(0).join(" "))
         if(data){
-            message.channel.send(data.note)
+            await message.channel.send(data.note, {disableMentions: "all"})
         }else{
-            message.channel.send(`Такой записки не существует`)
+            await message.channel.send(`Такой записки не существует`)
         }
     }
 }

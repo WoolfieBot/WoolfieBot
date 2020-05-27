@@ -28,6 +28,15 @@ class Steal extends Command {
         const coins: number = profile.coins;
         if(coins< 100) return message.channel.send(`У данного пользователя нет чего воровать!`)
         if(cd == null) {
+            let itemsObj = JSON.parse(`{${profile.items}}`)
+            if(itemsObj['shield'].lastUse !== null) {
+                await message.channel.send('У данного пользователя щит! Вы не можете у него своровать деньги!')
+                itemsObj['shield'].lastUse = DateTime.fromMillis(itemsObj['shield'].lastUse).minus({hours: 1}).toMillis()
+                await client.provider.updateProfile(message.guild!.id, message.author.id,{items: JSON.stringify(itemsObj).substr(1, JSON.stringify(itemsObj).length - 2)})
+                await client.provider.deleteCooldown(message.guild!.id,message.author.id,"STEAL")
+                await client.provider.createCooldown(message.guild!.id,message.author.id,"STEAL",time)
+                return
+            }
             let random: number = await client.provider.getRandomInt(2,40)
             if(chance.bool({likelihood: 10}) == true){
                 await message.channel.send(`Воу! Джекпот! Вы своровали **60** процентов от всей суммы наличных пользователя!`)

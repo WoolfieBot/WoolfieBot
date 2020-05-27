@@ -4,7 +4,7 @@ import {UserProfileData, CooldownObject, GuildObject, NoteObject, PunishmentObje
 import { UnMuteWorker } from "../workers/UnMuteService";
 import { client } from "../main";
 import { UnBanWorker } from "../workers/UnBanService";
-import {stringify} from "querystring";
+import {ItemsService} from "../workers/ItemsService";
 
 class WoolfieProvider {
 
@@ -15,6 +15,7 @@ class WoolfieProvider {
         //Запуск воркеров
         new UnMuteWorker().setWorker(client);
         new UnBanWorker().setWorker(client);
+        new ItemsService().setWorker(client);
     }
 
     /**
@@ -239,7 +240,27 @@ class WoolfieProvider {
      */
     public async updateProfile(guildID: string, userID: string, update: object): Promise<boolean> {
         try {
-            await sequelize.models.profiles.update(update,{where:{guildID:guildID,userID:userID}})
+            if(guildID == 'all'){
+                await sequelize.models.profiles.update(update,{where:{userID:userID}})
+            } else {
+                await sequelize.models.profiles.update(update,{where:{guildID:guildID,userID:userID}})
+            }
+        } catch (error) {
+            return false + error;
+        }
+        return true;
+    }
+
+    /**
+     * Функция для обновления определенного сервера.
+     *
+     * @param guildID строка с айди сервера.
+     * @param update объект с опциями обновления.
+     * @returns Возвращает Promise<boolean> = true, в противном случае false с ошибкой
+     */
+    public async updateGuild(guildID: string, update: object): Promise<boolean> {
+        try {
+            await sequelize.models.guilds.update(update,{where:{guildID:guildID}})
         } catch (error) {
             return false + error;
         }

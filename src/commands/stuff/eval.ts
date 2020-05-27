@@ -1,8 +1,8 @@
 import { Command } from "../../domain/Command";
 import { Message } from "discord.js";
 import * as util from "util";
-import { client } from "../../main";
 import { WoolfieClient } from "../../domain/WoolfieClient";
+
 class Eval extends Command {
     constructor(){
         super({
