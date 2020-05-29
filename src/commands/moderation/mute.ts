@@ -63,6 +63,7 @@ class Mute extends Command {
                 if(!duration.includes("d") && !duration.includes("s") && !duration.includes("m") && !duration.includes("h")) return message.channel.send("Можно банить только на дни, минуты, секунды или часы! Пример: 1d, 23m, 13s, 40h ...")
                 await member.roles.add(<Role>muteRole);
                 await client.provider.createPunisment(message.guild!.id,member.id,message.author.id,"TEMPMUTE", reason, DateTime.fromJSDate(new Date()).plus({milliseconds: ms(duration)}).toISO());
+                unmute(member,<Role>muteRole,duration)
                 await message.channel.send("Пользователь теперь в муте!")
                 await new WoolfieLogger({
                     type: "moderation",
@@ -91,6 +92,17 @@ class Mute extends Command {
             await message.channel.send(`Произошла ошибка при выполненни команды, проверьте правильность написания!\`\`\` >help ${this.name}\`\`\``)
         }
     }
+}
+
+function unmute(member: GuildMember, muteRole: Role, duration: string) {
+    setTimeout(async () =>{
+        if(!member.roles.cache.has(muteRole!.id) && !await client.provider.getUserActivePunishment(member.guild!.id, "TEMPMUTE", member.id) && !await client.provider.getUserActivePunishment(member.guild!.id, "MUTE", member.id)) return
+        await client.provider.updateUserActivePunishment(member.guild!.id,"TEMPMUTE",member.id,{active: 0})
+        await client.provider.updateUserActivePunishment(member.guild!.id,"MUTE",member.id,{active: 0})
+        if(member.roles.cache.has(muteRole!.id)) {
+            await member.roles.remove(<Role>muteRole);
+        }
+    }, ms(duration))
 }
 
 export = Mute;

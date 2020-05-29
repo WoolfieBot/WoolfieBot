@@ -19,17 +19,17 @@ class Buy extends Command {
         switch (args[0]) {
             case "1":
                 if(profile.coins < 2000) return message.channel.send("Недостаточно наличных для совершения покупки!")
-                    let objBoost = JSON.parse(`{${profile.items}}`)
+                    let objBoost = JSON.parse(profile.items)
                     objBoost.xp_boost.amount = parseInt(objBoost.xp_boost.amount) + 1;
-                    await client.provider.updateProfile(message.guild!.id, message.author.id, {items:JSON.stringify(objBoost).substr(1, JSON.stringify(objBoost).length - 2), coins: profile.coins - 2000})
+                    await client.provider.updateProfile(message.guild!.id, message.author.id, {items: JSON.stringify(objBoost), coins: profile.coins - 2000})
                     await message.channel.send('Вы успешно купили предмет **Бустер опыта**! Количество в инвентаре: ' + objBoost.xp_boost.amount)
                 break
             case "2":
                 if(profile.coins < 10000) return message.channel.send("Недостаточно наличных для совершения покупки!")
-                    let objShield = JSON.parse(`{${profile.items}}`)
+                    let objShield = JSON.parse(profile.items)
                     if(objShield.shield.amount >= 1) return message.channel.send('Нельзя иметь больше 1 щита для наличных! Используйте уже имеющийся.')
                     objShield.shield.amount = parseInt(objShield.shield.amount) + 1;
-                    await client.provider.updateProfile(message.guild!.id, message.author.id, {items:JSON.stringify(objShield).substr(1, JSON.stringify(objShield).length - 2), coins: profile.coins - 10000})
+                    await client.provider.updateProfile(message.guild!.id, message.author.id, {items: JSON.stringify(objShield), coins: profile.coins - 10000})
                     await message.channel.send('Вы успешно купили предмет **Щит для наличных**! Количество в инвентаре: ' + objShield.shield.amount)
                 break
             case "3":
@@ -40,16 +40,16 @@ class Buy extends Command {
                 break
             case "4":
                 if(profile.coins < 5000) return message.channel.send("Недостаточно наличных для совершения покупки!")
-                    let objLotery = JSON.parse(`{${profile.items}}`)
+                    let objLotery = JSON.parse(profile.items)
                     objLotery.lotery.amount = parseInt(objLotery.lotery.amount) + 1;
-                    await client.provider.updateProfile(message.guild!.id, message.author.id, {items:JSON.stringify(objLotery).substr(1, JSON.stringify(objLotery).length - 2), coins: profile.coins - 5000})
+                    await client.provider.updateProfile(message.guild!.id, message.author.id, {items: JSON.stringify(objLotery), coins: profile.coins - 5000})
                     await message.channel.send('Вы успешно купили предмет **Лотерея**! Количество в инвентаре: ' + objLotery.lotery.amount)
                 break
             case "5":
                 if(profile.coins < 8000) return message.channel.send("Недостаточно наличных для совершения покупки!")
-                let objReverse = JSON.parse(`{${profile.items}}`)
+                let objReverse = JSON.parse(profile.items)
                 objReverse.reverse_card.amount = parseInt(objReverse.reverse_card.amount) + 1;
-                await client.provider.updateProfile(message.guild!.id, message.author.id, {items:JSON.stringify(objReverse).substr(1, JSON.stringify(objReverse).length - 2), coins: profile.coins - 8000})
+                await client.provider.updateProfile(message.guild!.id, message.author.id, {items: JSON.stringify(objReverse), coins: profile.coins - 8000})
                 await message.channel.send('Вы успешно купили предмет **Карта возврата**! Количество в инвентаре: ' + objReverse.reverse_card.amount)
                 break
             case "6":

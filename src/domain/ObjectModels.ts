@@ -43,6 +43,7 @@ interface CooldownObjectData {
     isLvl?: number | null;
     isBlackListed?: number | null;
     isSaveInfo?: number | null;
+    itemOfDay?: string | null;
 }
 
 export class GuildObject {
@@ -62,6 +63,7 @@ export class GuildObject {
    readonly isLvl: number | null;
    readonly isBlackListed: number | null;
    readonly isSaveInfo?: number | null;
+   readonly itemOfDay?: string | null;
 
     constructor(data: CooldownObjectData) {
 
@@ -80,6 +82,7 @@ export class GuildObject {
         this.isLvl = data.isLvl ? data.isLvl : 0;
         this.isBlackListed = data.isBlackListed ? data.isBlackListed : 0;
         this.isSaveInfo = data.isSaveInfo ? data.isSaveInfo : 0;
+        this.itemOfDay = data.itemOfDay ? data.itemOfDay : null;
     }
 }
 

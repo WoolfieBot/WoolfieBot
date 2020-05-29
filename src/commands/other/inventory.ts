@@ -16,7 +16,7 @@ class Inventory extends Command {
     async run(message: Message, args: Array<string>) {
         const profile = await client.provider.getProfile(message.guild!.id,message.author.id)
         let string: string = "";
-        let obj: any = JSON.parse(`{${profile.items}}`)
+        let obj: any = JSON.parse(profile.items)
         Object.keys(obj).forEach((x: any) => {
             if(obj[x].amount == 0) return
             string += `**${obj[x].name}** ─ ${obj[x].amount}\n\n`

@@ -3,16 +3,26 @@ import { GuildMember} from "discord.js";
 
 export = async(client: WoolfieClient, oldMember: GuildMember, newMember: GuildMember): Promise<void> => {
     if(!oldMember.user.bot) {
-        if(newMember.roles.cache != oldMember.roles.cache) {
+        const profile = await client.provider.getProfile(newMember.guild.id,newMember.user.id);
+        if(profile) {
+            if(newMember.roles.cache != oldMember.roles.cache) {
+                const roles = newMember.roles.cache
+                    .filter(r => r.id !== newMember.guild?.id)
+                    .map(r => r.id).join(",") || 'none';
+                await client.provider.updateProfile(newMember.guild.id,newMember.id,{roles: roles})
+            }
+            if(newMember.displayName != oldMember.displayName) {
+                let displayName = newMember.displayName;
+                if(displayName == newMember.user.username) displayName = 'none';
+                await client.provider.updateProfile(newMember.guild.id,newMember.id,{userDisplayName: displayName})
+            }
+        } else {
             const roles = newMember.roles.cache
                 .filter(r => r.id !== newMember.guild?.id)
                 .map(r => r.id).join(",") || 'none';
-            await client.provider.updateProfile(newMember.guild.id,newMember.id,{roles: roles})
-        }
-        if(newMember.displayName != oldMember.displayName) {
             let displayName = newMember.displayName;
             if(displayName == newMember.user.username) displayName = 'none';
-            await client.provider.updateProfile(newMember.guild.id,newMember.id,{userDisplayName: displayName})
+            await client.provider.createProfile(newMember.guild.id,newMember.id,newMember.user.username,displayName,roles)
         }
     }
 }

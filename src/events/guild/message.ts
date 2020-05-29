@@ -90,7 +90,7 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
             lvl: 0
         };
         if(messageCheckXp >= 2 && messageCheckXp <= 7){
-            let itemsObj = JSON.parse(`{${profile.items}}`)
+            let itemsObj = JSON.parse(profile.items)
             if(itemsObj['xp_boost'].lastUse !== null) {
                 toUpdate.xp = 1488 * 1.5
             } else {
