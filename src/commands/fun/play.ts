@@ -2,95 +2,66 @@ import { Command } from "../../domain/Command";
 import { Message } from "discord.js";
 import ytdl from "ytdl-core";
 import { client } from "../../main";
-import { WoolfieClient } from "../../domain/WoolfieClient";
+import { PlayerHelper } from "../../domain/PlayerHelper";
+import search from "yt-search";
 
 class Play extends Command {
     constructor(){
         super({
             name: "play",
-            description: "Команда с помощью которой можно увидеть аватар пользователя!",
+            description: "Команда для прослушивания видеороликов на YouTube.",
             category: "fun",
-            usage: ">avatar [Упоминание или ник пользователя]"
+            usage: ">play [Ссылка на видеоролик или ключевые слова для поиска]"
         });
     }
 
-    async run(message: Message, args: string[], cmd: string, ops: any) {
+    async run(message: Message, args: string[], cmd: string) {
         //Я ебал рот этого ебучего модуля идёт он нахуй
         if(!args[0]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help ${this.name}\`\`\``)
         
-        if (!message.member?.voice.channel) return message.channel.send('Вы должны быть в голосовом канале.')
-
-        try{
+        if (!message.member?.voice.channel) return message.channel.send('Вы должны быть в голосовом канале.');
+        let info;
+        let video: search.VideoSearchResult[] = [];
 
         let validate = await ytdl.validateURL(args[0]);
+        const player = new PlayerHelper(message.guild!.id);
 
         if (!validate) {
-            return message.channel.send('Ты пидор ебучий нужна ссылка а не название');
+            video = await player.search(args.join(" "), message);
+            if(video.length <= 0) return;
+            info = await ytdl.getInfo(video[0].url);
+        } else {
+            info = await ytdl.getInfo(args[0]);
         }
 
-    }catch(err) {
-        return console.log(err)
-    }
-    let data = ops.get(message.guild!.id) || {};
-    try {
-        let info = await ytdl.getInfo(args[0])
-        if (!data.connection) data.connection = await message.member?.voice.channel.join();
-        if (!data.queue) data.queue = [];
-        data.guildID = message.guild!.id;
+        let data = player.getSession();
 
-        data.queue.push({
-            songTitle: info.title,
-            requester: message.author.tag,
-            url: args[0],
-            announceChannel: message.channel.id
-        });
-    
-        if (!data.dispatcher) await play(client, ops, data)
-        else {
+        if(!data) {
+            let queue = [{
+                songTitle: info.title,
+                requester: message.author.tag,
+                url: video.length > 0 ? video[0].url : args[0],
+                announceChannel: message.channel.id,
+                duration: parseInt(info.length_seconds)
+            }];
+            let voiceConnection = await message.member?.voice.channel.join();
+            let dispatcher = await player.play(client, voiceConnection, player, queue !== null ? queue : []);
+            data = player.createSession(voiceConnection, dispatcher, queue);
+        } else {
+            player.add({
+                songTitle: info.title,
+                requester: message.author.tag,
+                url: video.length > 0 ? video[0].url : args[0],
+                announceChannel: message.channel.id,
+                duration: info.length_seconds
+            });
+        }
+
+        if (data.queue.length > 1)
+        {
             await message.channel.send(`Добавлено в очередь: ${info.title} | Заказано: ${message.author.tag}`)
         }
 
-        ops.set(message.guild!.id, data)
-
-        async function play(client: WoolfieClient, ops: any, data: any) {
-            //@ts-ignore
-            client.channels.cache.get(data.queue[0].announceChannel).send(`Сейчас проигрывается: ${data.queue[0].songTitle} | Заказано: ${data.queue[0].requester}`);
-        
-            data.dispatcher = await data.connection.play(ytdl(data.queue[0].url, { filter: 'audioonly' }));
-            data.dispatcher.guildID = data.guildID;
-        
-            data.dispatcher.once('end', function(this: any) {
-                end(client, ops, this);
-            });
-        }
-        function end(client: any, ops: any, dispatcher: any) {
-
-            let fetched = ops.get(dispatcher.guildID);
-        
-            fetched.queue.shift();
-        
-            if (fetched.queue.length > 0) {
-                 
-                ops.set(dispatcher.guildID, fetched);
-        
-                play(client, ops, fetched);
-        
-            } else {
-                
-                ops.delete(dispatcher.guildID);
-        
-                let vc = client.guilds.get(dispatcher.guildID).me.voiceChannel;
-                if (vc) vc.leave();
-            }
-        }
-        
-
-    }
-catch(err){
-
-    await message.channel.send(`Произошла ошибка ${err}`)
-
-}
     }
 }
 

@@ -15,6 +15,7 @@ export class ItemsService extends SimpleWorker {
     }
 
     async setWorker(client: WoolfieClient) {
+        return
         schedule('*/1 * * * *', async () => {
             let startTime = DateTime.local().toMillis();
             let profiles: Array<UserProfileData> = await sequelize.models.profiles.findAll()

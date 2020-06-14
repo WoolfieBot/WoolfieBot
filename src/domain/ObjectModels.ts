@@ -51,7 +51,7 @@ export class GuildObject {
    readonly id: number;
    readonly guildID: string;
    readonly guildName: string;
-   readonly prefix: string | null;
+   readonly prefix: string;
    readonly welcomeMsg: string;
    readonly welcomeChannel: string;
    readonly loggingChannel: string | null;

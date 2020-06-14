@@ -68,14 +68,6 @@ Guilds.init({
         type:DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
-    },
-    itemOfDay: {
-        type:DataTypes.STRING,
-        allowNull: true
-    },
-    items: {
-        type:DataTypes.STRING,
-        allowNull: true
     }
 },{
     sequelize: sequelize,

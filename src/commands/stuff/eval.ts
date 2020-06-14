@@ -14,7 +14,7 @@ class Eval extends Command {
         });
     }
     
-    async run(message: Message, args: Array<string>, cmd: string, ops: any, client: WoolfieClient) {
+    async run(message: Message, args: Array<string>, cmd: string, client: WoolfieClient) {
         const ownerid = "648620324283482120";
         if(message.author.id === ownerid) {
             try {

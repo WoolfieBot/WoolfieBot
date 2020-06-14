@@ -1,7 +1,6 @@
 import {Message, MessageEmbed, Role, TextChannel} from "discord.js";
 import { WoolfieClient } from "../../domain/WoolfieClient";
 import {GuildObject, UserProfileData} from "../../domain/ObjectModels";
-const ops = new Map();
 
 export = async (client: WoolfieClient, message: Message): Promise<void> => {
     if(message.author.bot) return;
@@ -55,7 +54,8 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
             }
         }
     }
-    if(message.content.startsWith(">>")) {
+  
+    if(message.content.startsWith(settings.prefix)) {
 
     if(profile.isBlackListed == 1) {
         await message.channel.send(`Вы были добавлены в чёрный список бота.`)
@@ -67,7 +67,7 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
         return
     }
 
-    const args: Array<string> = message.content.slice(">>".length).trim().split(/ +/g);
+    const args: Array<string> = message.content.slice(settings.prefix.length).trim().split(/ +/g);
     const cmd: string = args.shift()!.toLowerCase();
     let command;
     if(cmd.length === 0) return;
@@ -78,7 +78,7 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
         command = client.aliases.get(cmd)
     }
     if(command) {
-        command.run(message, args, cmd, ops, client);
+        command.run(message, args, cmd, client);
     }
     }
 
@@ -90,12 +90,7 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
             lvl: 0
         };
         if(messageCheckXp >= 2 && messageCheckXp <= 7){
-            let itemsObj = JSON.parse(profile.items)
-            if(itemsObj['xp_boost'].lastUse !== null) {
-                toUpdate.xp = 1488 * 1.5
-            } else {
-                toUpdate.xp = 1488;
-            }
+            toUpdate.xp = 1488;
             toUpdate.coins = 1488;
             if(profile.xp >= Math.floor(100 + 100 * 2.891 * profile.lvl + 1)) {
                 let channel: TextChannel = <TextChannel>message.guild.channels.cache.find(ch => ch.id == settings.lvlUpChannel)

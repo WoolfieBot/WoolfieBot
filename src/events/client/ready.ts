@@ -13,8 +13,8 @@ export = async (client: WoolfieClient): Promise<void> => {
     client.user?.setPresence({
         status:"idle",
         activity: {
-            name: "Пишу хуйню",
-            type:"LISTENING"
+            name: "Кашалие ломает стёкла",
+            type:"WATCHING"
         }
     })
 }
