@@ -1,5 +1,5 @@
 import { Command } from "../../domain/Command";
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import ytdl from "ytdl-core";
 import { client } from "../../main";
 import { PlayerHelper } from "../../domain/PlayerHelper";
@@ -33,7 +33,8 @@ class Play extends Command {
         } else {
             info = await ytdl.getInfo(args[0]);
         }
-
+        let thumb = info.player_response.videoDetails.thumbnail.thumbnails;
+        
         let data = player.getSession();
 
         if(!data) {
@@ -42,7 +43,12 @@ class Play extends Command {
                 requester: message.author.tag,
                 url: video.length > 0 ? video[0].url : args[0],
                 announceChannel: message.channel.id,
-                duration: parseInt(info.length_seconds)
+                duration: parseInt(info.length_seconds),
+                thumb: {
+                    url: thumb[thumb.length - 1].url,
+                    height: thumb[thumb.length - 1].height,
+                    width: thumb[thumb.length - 1].width 
+                }
             }];
             let voiceConnection = await message.member?.voice.channel.join();
             let dispatcher = await player.play(client, voiceConnection, player, queue !== null ? queue : []);
@@ -53,13 +59,18 @@ class Play extends Command {
                 requester: message.author.tag,
                 url: video.length > 0 ? video[0].url : args[0],
                 announceChannel: message.channel.id,
-                duration: info.length_seconds
+                duration: info.length_seconds,
+                thumb: {
+                    url: thumb[thumb.length - 1].url,
+                    height: thumb[thumb.length - 1].height,
+                    width: thumb[thumb.length - 1].width 
+                }
             });
         }
 
         if (data.queue.length > 1)
         {
-            await message.channel.send(`Добавлено в очередь: ${info.title} | Заказано: ${message.author.tag}`)
+            await message.channel.send(new MessageEmbed().setImage(thumb[thumb.length - 1].url).setTitle('⬆️ Очередь').setDescription(`Трек:\n**[${info.title}](${info.video_url})**\n\nБыл добавлен в очередь пользователем:\n**${message.member.displayName || message.author.username}**\n\n${player.msToTime(parseInt(info.length_seconds) * 1000)}`).setFooter('Общее количество треков в плейлисте: ' + player.getSession().queue.length))
         }
 
     }

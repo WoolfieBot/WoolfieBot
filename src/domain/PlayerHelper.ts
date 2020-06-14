@@ -17,7 +17,7 @@ class PlayerHelper {
         return playerSessions.get(this.guildID);
     }
 
-    public createSession(voiceConnection: VoiceConnection, streamDispatcher: StreamDispatcher, queue: Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number}>) {
+    public createSession(voiceConnection: VoiceConnection, streamDispatcher: StreamDispatcher, queue: Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number, thumb: { url: string, height: number, width: number }}>) {
         playerSessions.set(this.guildID, {
             guildID: this.guildID,
             connection: voiceConnection,
@@ -27,7 +27,7 @@ class PlayerHelper {
         return this.getSession();
     }
 
-    public next(): Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number}> | null {
+    public next(): Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number, thumb: { url: string, height: number, width: number }}> | null {
         if(playerSessions.get(this.guildID).queue.length < 1) return null;
         let data = playerSessions.get(this.guildID);
         data.queue.shift();
@@ -35,7 +35,7 @@ class PlayerHelper {
         return this.getSession().queue;
     }
 
-    public add(info: object): Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number}> | null {
+    public add(info: object): Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number, thumb: { url: string, height: number, width: number }}> | null {
         let data = this.getSession();
         data.queue.push(info);
         playerSessions.set(this.guildID, data);
@@ -80,13 +80,18 @@ class PlayerHelper {
         return video;
     }
 
-    public async getPlaylist(name: string, userID: string) {
-        let data = await sequelize.models.playlists.findAll({where:{name: name, userID: userID}});
+    public async getPlaylist(name: string, guildID: string, userID?: string) {
+        let data;
+        if(userID) {
+            data = await sequelize.models.playlists.findAll({where:{name: name, guildID: guildID, userID: userID}});
+        } else {
+            data = await sequelize.models.playlists.findAll({where:{name: name, guildID: guildID}});
+        }
         return data;
     }
 
-    public async addPlaylist(name: string, userID: string, title: string, url: string, duration: string, author: string) {
-        await sequelize.models.playlists.create({name: name, userID: userID, title: title, url: url, duration: duration, author: author})
+    public async addPlaylist(name: string, userID: string, guildID: string, title: string, url: string, duration: string, author: string, thumb: { url: string, height: number, width: number }) {
+        await sequelize.models.playlists.create({name: name, guildID: guildID,userID: userID, title: title, url: url, duration: duration, author: author, thumb: thumb.url, height: thumb.height, width: thumb.width})
     }
 
     public async removeFromPlaylist(name: string, userID: string, url: string) {
@@ -97,9 +102,9 @@ class PlayerHelper {
         await sequelize.models.playlists.destroy({where:{name: name, userID: userID}})
     }
 
-    public async play(client: WoolfieClient, voiceConnection: VoiceConnection, player: PlayerHelper, queue: Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number}>): Promise<StreamDispatcher> {
+    public async play(client: WoolfieClient, voiceConnection: VoiceConnection, player: PlayerHelper, queue: Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number, thumb: { url: string, height: number, width: number }}>): Promise<StreamDispatcher> {
         const channel = <TextChannel>client.channels.cache.get(queue[0].announceChannel);
-        channel.send(`Сейчас проигрывается: ${queue[0].songTitle} | Заказано: ${queue[0].requester}`);
+        channel.send(new MessageEmbed().setImage(queue[0].thumb.url).setTitle(':play_pause: Сейчас проигрывается').setDescription(`**[${queue[0].songTitle}](${queue[0].url})**\n\nЗаказано: ${queue[0].requester}\n\n${player.msToTime(queue[0].duration * 1000)}`).setFooter('Общее колличество треков в плейлисте: ' + queue.length));
         let dispatcher: StreamDispatcher = await voiceConnection.play(ytdl(queue[0].url, { filter: 'audioonly' }));
         this.deleteSession()
         this.createSession(voiceConnection, dispatcher, queue)

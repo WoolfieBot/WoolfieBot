@@ -17,6 +17,10 @@ Playlists.init({
         type: DataTypes.TEXT(),
         allowNull: false
     },
+    guildID:{
+        type: DataTypes.TEXT(),
+        allowNull: false
+    },
     title:{
         type: DataTypes.TEXT(),
         allowNull: false
@@ -31,6 +35,18 @@ Playlists.init({
     },
     author:{
         type: DataTypes.TEXT(),
+        allowNull: false
+    },
+    thumb:{
+        type: DataTypes.TEXT(),
+        allowNull: false
+    },
+    height:{
+        type: DataTypes.INTEGER(),
+        allowNull: false
+    },
+    width:{
+        type: DataTypes.INTEGER(),
         allowNull: false
     }
 },
