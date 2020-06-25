@@ -20,8 +20,7 @@ class Skip extends Command {
         if(message.member?.voice.channelID !== session.connection.voice.channelID) return message.channel.send('Вы должны находится в одном канале с ботом!');
 
         
-        session.dispatcher.emit('finish', function(this: any) {
-            this.destroy();
+        session.dispatcher.emit('close', function(this: any) {
             player.end(client, this.player.voiceConnection.channel.guild.id, player);
         })
 

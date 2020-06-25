@@ -105,22 +105,35 @@ class PlayerHelper {
     public async play(client: WoolfieClient, voiceConnection: VoiceConnection, player: PlayerHelper, queue: Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number, thumb: { url: string, height: number, width: number }}>): Promise<StreamDispatcher> {
         const channel = <TextChannel>client.channels.cache.get(queue[0].announceChannel);
         channel.send(new MessageEmbed().setImage(queue[0].thumb.url).setTitle(':play_pause: Сейчас проигрывается').setDescription(`**[${queue[0].songTitle}](${queue[0].url})**\n\nЗаказано: ${queue[0].requester}\n\n${player.msToTime(queue[0].duration * 1000)}`).setFooter('Общее колличество треков в плейлисте: ' + queue.length));
-        let dispatcher: StreamDispatcher = await voiceConnection.play(ytdl(queue[0].url, { filter: 'audioonly' }));
+        let dispatcher: StreamDispatcher = await voiceConnection.play(await ytdl(queue[0].url, { filter: "audioonly", highWaterMark: 1<<20 }), { highWaterMark : 1<<20, fec : false });
+        await client.provider.sleep(5000);
         this.deleteSession()
         this.createSession(voiceConnection, dispatcher, queue)
     
         dispatcher.on('finish', function(this: any) {
-            this.destroy();
             player.end(client, this.player.voiceConnection.channel.guild.id, player);
         });
-    
+
+        dispatcher.on('error', (err) => {
+            console.log(err)
+        })
+
+        dispatcher.on('debug', (debug) => {
+            console.log(debug)
+        })
+
+        dispatcher.on('close', function(this: any) {
+            console.log('epta')
+            player.end(client, this.voiceConnection.channel.guild.id, player);
+        })
+
         return dispatcher;
     }
     
     public async end(client: WoolfieClient, guildID: string, player: PlayerHelper) {
         let session = player.getSession();
         let fetched = player.next();
-    
+
         if (fetched!.length > 0) {
             this.play(client, session.connection, player, fetched !== null ? fetched : []);
         } else {

@@ -37,7 +37,8 @@
     "util": "^0.12.2",
     "winston": "^3.2.1",
     "yt-search": "^1.1.2",
-    "ytdl-core": "^2.0.1"
+    "ytdl-core": "^2.1.7",
+    "ytdl-core-discord": "^1.2.0"
   },
   "devDependencies": {
     "@types/common-tags": "^1.8.0",

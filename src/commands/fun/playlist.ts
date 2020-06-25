@@ -75,7 +75,7 @@ class Playlist extends Command {
             case "add":
                 if(!args[1]) return message.channel.send('Укажите название плейлиста!')
                 if(!args[2]) return message.channel.send('Укажите ссылку или название песни!')
-                playlist = await player.getPlaylist(args[1], message.guild!.id);
+                playlist = await player.getPlaylist(args[1], message.guild!.id, message.author.id);
                 if(playlist.length == 0) return message.channel.send('Такого плейлиста не существует, или он не пренадлежит вам!')
                 validate = ytdl.validateURL(args.slice(2).join());
                 video = [];
@@ -129,7 +129,7 @@ class Playlist extends Command {
                 break;
             case "remove":
                 if(!args[1]) return message.channel.send('Укажите название плейлиста!')
-                playlist = await player.getPlaylist(args.slice(1).join(), message.author.id);
+                playlist = await player.getPlaylist(args[1], message.guild!.id, message.author.id);
                 if(playlist.length < 1) return message.channel.send('Такого плейлиста не существует, или он не пренадлежит вам!');
                 let res = "";
                 playlist.forEach((x: any, int: number) => {
