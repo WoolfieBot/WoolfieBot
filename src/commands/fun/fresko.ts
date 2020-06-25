@@ -45,10 +45,12 @@ class Fresko extends Command {
                 if (ctx.measureText(line + words[0]).width < maxWidth) {
                     line += words.shift() + " ";
                 } else {
+                    // @ts-ignore
                     lines.push(line);
                     line = "";
                 }
                 if (words.length === 0) {
+                    // @ts-ignore
                     lines.push(line);
                 }
             }
