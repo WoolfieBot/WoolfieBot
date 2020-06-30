@@ -48,23 +48,30 @@ class PlayerHelper {
 
     public async search(arg: string, message: Message) {
         let video: search.VideoSearchResult[] = [];
+
         let r = await search({
             query: arg,
             pageStart: 1,
             pageEnd: 1
-        })
+        });
+
         let count = 0;
+
         while(r.videos.length < 1) {
+
             r = await search({
                 query: arg,
                 pageStart: 1,
                 pageEnd: 1
             })
+
             count++;
+
             if(count >= 20){
                 message.channel.send('Произошла ошибка при поиске! Попробуйте вставить ссылку.')
                 return video;
             }
+
         }
         let string = "";
         r.videos = r.videos.slice(0, 10)
@@ -72,9 +79,20 @@ class PlayerHelper {
             string += `#${i + 1} [${x.title}](${x.url}) | ${HumanizeDuration(x.duration.seconds * 1000, {language: 'ru', delimiter: ' ', largest: 2, round: true})} | ${x.author.channelName || x.author.name}\n`
         })
         const filter = (m: Message) => /[0-9]/.test(m.content) && m.author == message.author;
-        message.channel.send(new MessageEmbed().setDescription(string).setFooter("Введите в чат число от 1 до 10 что бы выбрать песню.").setTitle('Результаты поиска'));
-        
-        await message.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
+
+        message.channel.send(
+            new MessageEmbed()
+                .setDescription(string)
+                .setFooter("Введите в чат число от 1 до 10 что бы выбрать песню.")
+                .setTitle('Результаты поиска')
+        );
+
+        await message.channel.awaitMessages(filter,
+            {
+                max: 1,
+                time: 60000,
+                errors: ['time']
+            })
         .then(collected => {video.push(r.videos[parseInt(collected.first()!.content) - 1])})
         .catch(collected => message.channel.send('Время выбора истекло.'));
         return video;
@@ -104,8 +122,25 @@ class PlayerHelper {
 
     public async play(client: WoolfieClient, voiceConnection: VoiceConnection, player: PlayerHelper, queue: Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number, thumb: { url: string, height: number, width: number }}>): Promise<StreamDispatcher> {
         const channel = <TextChannel>client.channels.cache.get(queue[0].announceChannel);
-        channel.send(new MessageEmbed().setImage(queue[0].thumb.url).setTitle(':play_pause: Сейчас проигрывается').setDescription(`**[${queue[0].songTitle}](${queue[0].url})**\n\nЗаказано: ${queue[0].requester}\n\n${player.msToTime(queue[0].duration * 1000)}`).setFooter('Общее колличество треков в плейлисте: ' + queue.length));
-        let dispatcher: StreamDispatcher = await voiceConnection.play(await ytdl(queue[0].url, { filter: "audioonly", highWaterMark: 1<<20 }), { highWaterMark : 1<<20, fec : false });
+        channel.send(
+            new MessageEmbed()
+                .setImage(queue[0].thumb.url)
+                .setTitle(':play_pause: Сейчас проигрывается')
+                .setDescription(`**[${queue[0].songTitle}](${queue[0].url})**\n\nЗаказано: ${queue[0].requester}\n\n${player.msToTime(queue[0].duration * 1000)}`)
+                .setFooter('Общее колличество треков в плейлисте: ' + queue.length)
+        );
+        let dispatcher: StreamDispatcher = await voiceConnection.play(
+            await ytdl(queue[0].url,
+            {
+                filter: "audioonly",
+                highWaterMark: 1<<20 
+            }
+            ),
+            {
+                highWaterMark : 1<<20,
+                fec : false 
+            }
+        );
         await client.provider.sleep(5000);
         this.deleteSession()
         this.createSession(voiceConnection, dispatcher, queue)
