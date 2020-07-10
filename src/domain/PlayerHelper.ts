@@ -145,27 +145,19 @@ class PlayerHelper {
         this.deleteSession()
         this.createSession(voiceConnection, dispatcher, queue)
     
-        dispatcher.on('finish', function(this: any) {
-            player.end(client, this.player.voiceConnection.channel.guild.id, player);
+        dispatcher.on('finish', () => {
+            player.end(client, this.guildID, player);
         });
 
-        dispatcher.on('error', (err) => {
-            console.log(err)
-        })
-
-        dispatcher.on('debug', (debug) => {
-            console.log(debug)
-        })
-
-        dispatcher.on('close', function(this: any) {
-            console.log('epta')
-            player.end(client, this.voiceConnection.channel.guild.id, player);
+        dispatcher.on('close', () => {
+            player.end(client, this.guildID, player);
         })
 
         return dispatcher;
     }
     
     public async end(client: WoolfieClient, guildID: string, player: PlayerHelper) {
+        console.log(guildID)
         let session = player.getSession();
         let fetched = player.next();
 

@@ -16,21 +16,14 @@ class Rank extends Command {
         });
     }    
     async run(message: Message, args: Array<string>) {
-        const canvas = Canvas.createCanvas(700, 180)
+        var guild: any = await client.provider.getGuild(message.guild!.id);
+        if(guild.isLvl === 0) return message.channel.send(`На данном сервере отключён ранкинг.`);
+        const canvas = Canvas.createCanvas(700, 180);
         const ctx = canvas.getContext('2d');
         var member: GuildMember = await client.provider.getMember(message, args.join(" "));        
         var stats: UserProfileData = await client.provider.getProfile(message.guild!.id, member.id);
-        var guild: any = await client.provider.getGuild(message.guild!.id);
-        var top: UserProfileData = await sequelize.models.profiles.findAll({where:{guildID:message.guild!.id}, order:[['lvl','DESC']]})
-        function getRank(top:any){
-            for (let index = 0; index < top.length; index++) {
-                const element = top[index];
-                if(element.userID == member.id){
-                    return index + 1
-                }
-            }
-        }
-        if(guild.isLvl === 0) return message.channel.send(`На данном сервере отключён ранкинг.`)
+        var top: Array<UserProfileData> = await sequelize.models.profiles.findAll({where:{guildID:message.guild!.id}, order:[['lvl','DESC']]});
+        var check = (element: UserProfileData) => element.userID == member.id;
         if(stats === null){
             const roles: any = member?.roles.cache
             .filter((r: any) => r.id !== message.guild?.id)
@@ -74,13 +67,19 @@ class Rank extends Command {
         ctx.fillText(stats.xp + "/" + tavo,canvas.width / 1.55,canvas.height / 1.15)
         ctx.font = 'bold 20x "VAG World"';
         ctx.textAlign = "left"; 
-        ctx.fillText("#" + getRank(top) + " Ранг " + stats.lvl + " Ур. " + stats.reputation + " 🍖",canvas.width / 3.2,canvas.height / 1.46)
+        ctx.fillText("#" + (top.findIndex(check) + 1) + " Ранг " + stats.lvl + " Ур. " + stats.reputation + " 🍖",canvas.width / 3.2,canvas.height / 1.46)
         ctx.beginPath();
         ctx.arc(93, 93, 73, 0, Math.PI * 2, true);
         ctx.closePath();
         ctx.clip();
-        const avatar = await Canvas.loadImage(member.user.displayAvatarURL({format:'png'}));        
+        const avatar = await Canvas.loadImage(member.user.displayAvatarURL({format:'png'}));
+        const status = await Canvas.loadImage('https://media.discordapp.net/attachments/720287261098508338/727832871175454780/online.png');
         ctx.drawImage(avatar, 20, 20, 150, 150);
+        ctx.beginPath();
+        ctx.arc(81, 121, 111, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(status, 90, 90, 100, 100);
         const attachment = new MessageAttachment(canvas.toBuffer(), 'ranking.png');        
         await message.channel.send(attachment);
     }
