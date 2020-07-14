@@ -26,9 +26,9 @@ class WhoIs extends Command {
             .filter((r: Role) => r.id !== message.guild!.id)
             .map((r: Role) => r).join(", ") || 'none';
 
-        const lastCh = await <TextChannel>message.guild?.channels.cache.get(<string>member.lastMessageChannelID);
-        const lastMsg = await lastCh?.messages.fetch(<string>member.lastMessageID);
-        const last = new Date(lastMsg.createdTimestamp).toLocaleString();
+        //const lastCh = await <TextChannel>message.guild?.channels.cache.get(<string>member.lastMessageChannelID);
+        //const lastMsg = await lastCh?.messages.fetch(<string>member.lastMessageID);
+        //const last = new Date(lastMsg.createdTimestamp).toLocaleString();
 
         // User variables
         const created: string = new Date(member.user.createdAt).toLocaleString();
@@ -41,7 +41,6 @@ class WhoIs extends Command {
             .addField('Информация об участнике:  ', stripIndents`**> Отображаемое имя:** ${member.displayName}
             **> Зашёл на сервер:** ${joined}
             **> Роли:** ${roles}
-            **> Последняя активность в чате:** ${last}
             **> О себе:** ${profile.about}`, true)
 
             .addField('Информация о пользователе:', stripIndents`**> ID:** ${member.user.id}

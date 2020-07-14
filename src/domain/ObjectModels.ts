@@ -273,3 +273,20 @@ export class PunishmentObject {
         this.expiresAt = data.expiresAt;
     }
 }
+
+export class UserInventory {
+
+    readonly id: number;
+    readonly userID: string;
+    readonly guildID: string;
+    readonly itemID: string;
+    readonly lastUse: Date;
+
+    constructor(data: UserInventory) {
+        this.id = data.id;
+        this.guildID = data.guildID;
+        this.userID = data.userID;
+        this.itemID = data.itemID;
+        this.lastUse =  data.lastUse;
+    }
+}
