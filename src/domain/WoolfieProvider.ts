@@ -511,7 +511,7 @@ class WoolfieProvider {
         formatObject.user_mention = `<@${formatObject.user_mention}>`
         for(let k in formatObject) {
             let r = new RegExp(`{{${k}}}`, "gi");
-            // @ts-ignore
+            // @ts-ignoreы
             text = text.replace(r, formatObject[k]);
         }
         return text;
