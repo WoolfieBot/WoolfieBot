@@ -14,6 +14,10 @@ class Inventory extends Command {
     }
 
     async run(message: Message, args: Array<string>) {
+        // Проверка включен ли ранкинг
+        const guild: any = await client.provider.getGuild(message.guild!.id);
+        if(guild.isLvl === 0) return message.channel.send(`На данном сервере отключён ранкинг.`);
+
         const profile = await client.provider.getProfile(message.guild!.id,message.author.id)
         let string: string = "";
         let obj: any = JSON.parse(profile.items)

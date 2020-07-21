@@ -7,10 +7,6 @@ class InventoryHelper {
         this.guildID = guildID;
     }
 
-    public getInventory(): UserInventory {
-        
-        return
-    }
 }
 
 export { InventoryHelper }

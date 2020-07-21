@@ -17,6 +17,10 @@ class Daily extends Command {
     }
 
     async run(message: Message, args: Array<string>) {
+        // Проверка включен ли ранкинг
+        const guild: any = await client.provider.getGuild(message.guild!.id);
+        if(guild.isLvl === 0) return message.channel.send(`На данном сервере отключён ранкинг.`);
+
         let time: string = DateTime.fromJSDate(new Date()).plus({hours: 12}).toISO()
         let cd: CooldownObject = await client.provider.getCooldown(message.guild!.id,message.author.id,"DAILY");
         var string: string;

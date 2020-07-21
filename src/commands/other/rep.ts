@@ -17,26 +17,43 @@ class Rep extends Command {
     }
 
     async run(message: Message, args: Array<string>) {
+        // Проверка включен ли ранкинг
+        const guild: any = await client.provider.getGuild(message.guild!.id);
+        if(guild.isLvl === 0) return message.channel.send(`На данном сервере отключён ранкинг.`);
+
         if(!args[0]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help ${this.name}\`\`\``)
-        var member: GuildMember = await client.provider.getMember(message, args.join(" "));
+
+        const member: GuildMember = await client.provider.getMember(message, args.join(" "));
         if(member.id == message.author.id) return message.channel.send(`Вы не можете поднять репутацию самому себе!`)
+
         let time: string = DateTime.fromJSDate(new Date()).plus({hours: 6}).toISO();
         let cd: CooldownObject = await client.provider.getCooldown(message.guild!.id,message.author.id,"REPUTATION");
-        var string: string;
+
+        let string: string;
+
         if(cd == null) {
+
             await client.provider.updateRanks(message.guild!.id,member.id,{reputation:1})
-            message.channel.send(`Вы успешно подняли репутацию пользователя ${member.displayName}`)
+            await message.channel.send(`Вы успешно подняли репутацию пользователя ${member.displayName}`)
+
             return await client.provider.createCooldown(message.guild!.id,message.author.id,"REPUTATION",time)
+
         }else{
             var k: number = DateTime.fromJSDate(cd.expiresAt).toMillis() - DateTime.fromJSDate(new Date()).toMillis()
+
             if( k < 0 ){
+
                 await client.provider.updateRanks(message.guild!.id,member.id,{reputation:1})
-                message.channel.send(`Вы успешно подняли репутацию пользователя ${member.displayName}`)
+                await message.channel.send(`Вы успешно подняли репутацию пользователя ${member.displayName}`)
+
                 await client.provider.deleteCooldown(message.guild!.id,message.author.id,"REPUTATION")
                 return await client.provider.createCooldown(message.guild!.id,message.author.id,"REPUTATION",time)
+
             }else{
+
                 string = humanizeDuration(k,{language: "ru", delimiter: " и ", largest: 2, round: true})
-                message.channel.send(`Вы уже поднимали репутацию пользователя недавно! Попробуйте снова через: \`${string}\``)
+                await message.channel.send(`Вы уже поднимали репутацию пользователя недавно! Попробуйте снова через: \`${string}\``)
+
             }            
         }
     }

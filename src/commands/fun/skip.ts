@@ -19,12 +19,9 @@ class Skip extends Command {
         if(!session) return message.channel.send('На данный момент нет активных сессий плеера на этом сервере!');
         if(message.member?.voice.channelID !== session.connection.voice.channelID) return message.channel.send('Вы должны находится в одном канале с ботом!');
 
-        
-        session.dispatcher.emit('close', () => {
-            player.end(client, message.guild!.id, player);
-        })
+        await message.channel.send('Вы пропустили песню.');
 
-        message.channel.send('Вы пропустили песню.')
+        session.dispatcher.emit('finish');
     }
 }
 

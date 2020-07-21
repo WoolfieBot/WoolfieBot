@@ -16,7 +16,6 @@ class Play extends Command {
     }
 
     async run(message: Message, args: string[], cmd: string) {
-        //Я ебал рот этого ебучего модуля идёт он нахуй
         if(!args[0]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help ${this.name}\`\`\``)
         
         if (!message.member?.voice.channel) return message.channel.send('Вы должны быть в голосовом канале.');
@@ -40,7 +39,7 @@ class Play extends Command {
         if(!data) {
             let queue = [{
                 songTitle: info.title,
-                requester: message.author.tag,
+                requester: `<@${message.author.id}>`,
                 url: video.length > 0 ? video[0].url : args[0],
                 announceChannel: message.channel.id,
                 duration: parseInt(info.length_seconds),
@@ -51,12 +50,12 @@ class Play extends Command {
                 }
             }];
             let voiceConnection = await message.member?.voice.channel.join();
-            let dispatcher = await player.play(client, voiceConnection, player, queue !== null ? queue : []);
+            let dispatcher = await player.play(client, voiceConnection, player, queue);
             data = player.createSession(voiceConnection, dispatcher, queue);
         } else {
             player.add({
                 songTitle: info.title,
-                requester: message.author.tag,
+                requester: `<@${message.author.id}>`,
                 url: video.length > 0 ? video[0].url : args[0],
                 announceChannel: message.channel.id,
                 duration: info.length_seconds,

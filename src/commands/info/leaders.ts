@@ -15,24 +15,40 @@ class Leaders extends Command {
         });
     }
     async run(message: Message, args: Array<string>) {
+        // Проверка включен ли ранкинг
+        const guild: any = await client.provider.getGuild(message.guild!.id);
+        if(guild.isLvl === 0) return message.channel.send(`На данном сервере отключён ранкинг.`);
+
         const top: Array<UserProfileData> = await sequelize.models.profiles.findAll({
             where: {guildID: message.guild!.id},
             order: [['lvl', 'DESC']],
             limit: 10
         });
+
         let string: string = "";
+
         for (let index: number = 0; index < top.length; index++) {
+
             const element: UserProfileData = top[index];
+
             if(index === 0){
+
                 string += `🌟 #1. ${element.userDisplayName !== "none" ? element.userDisplayName : element.username}\n**Уровень:** ${element.lvl} | **Опыт:** ${element.xp} | 🍖 ${element.reputation} | 💰 ${element.coins}\n`
+
             }else{
+
                 if (index <= 2){
+
                     string += `⭐ #${index + 1}. ${element.userDisplayName !== "none" ? element.userDisplayName : element.username}\n**Уровень:** ${element.lvl} | **Опыт:** ${element.xp} | 🍖 ${element.reputation} | 💰 ${element.coins}\n`
+
                 }else{
+
                     string += `#${index + 1}. ${element.userDisplayName !== "none" ? element.userDisplayName : element.username}\n**Уровень:** ${element.lvl} | **Опыт:** ${element.xp} | 🍖 ${element.reputation} | 💰 ${element.coins}\n`
+
                 }
             }  
         }
+
         const embed: MessageEmbed = new MessageEmbed()
             .setTitle(`🏆 Топ рейтинга участников ${message.guild?.name}`)
             .setDescription(string)

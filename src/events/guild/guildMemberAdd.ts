@@ -20,8 +20,6 @@ export = async (client: WoolfieClient, member: GuildMember): Promise<void> => {
                     await member.setNickname(profile.userDisplayName)
                 }
             }
-        } else {
-            await client.provider.createProfile(member.guild.id,member.id,member.user.username,"none","none")
         }
 
         let channel = <TextChannel>member.guild.channels.cache.get(guild.welcomeChannel)

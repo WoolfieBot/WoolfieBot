@@ -28,6 +28,7 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
         if(displayName == message.author.username) displayName = 'none';
         await client.provider.createProfile(message.guild.id,message.author.id,message.author.username,displayName,roles)
         profile = await client.provider.getProfile(message.guild.id,message.author.id)
+        console.log('Зарегестрирован новый пользователь ' + displayName + '. ' + __filename)
     }
     
     if(!message.member) await message.guild.members.fetch(message)
@@ -69,33 +70,45 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
 
     const args: Array<string> = message.content.slice(settings.prefix.length).trim().split(/ +/g);
     const cmd: string = args.shift()!.toLowerCase();
+
     let command;
-    if(cmd.length === 0) return;
-    if(client.commands.has(cmd)) {
-        command = client.commands.get(cmd);
-    }
-    if(client.aliases.has(cmd)) {
-        command = client.aliases.get(cmd)
-    }
-    if(command) {
-        command.run(message, args, cmd, client);
-    }
+
+        if(cmd.length === 0) return;
+
+        if(client.commands.has(cmd)) {
+            command = client.commands.get(cmd);
+        }
+
+        if(client.aliases.has(cmd)) {
+            command = client.aliases.get(cmd)
+        }
+
+        if(command) {
+            command.run(message, args, cmd, client);
+        }
+
     }
 
     if(settings.isLvl == 1){
         const messageCheckXp: number = await client.provider.getRandomInt(1, 15);
+
         const toUpdate = {
             xp: 0,
             coins: 0,
             lvl: 0
         };
+
         if(messageCheckXp >= 2 && messageCheckXp <= 7){
+
             toUpdate.xp = 1488;
             toUpdate.coins = 1488;
+
             if(profile.xp >= Math.floor(100 + 100 * 2.891 * profile.lvl + 1)) {
                 let channel: TextChannel = <TextChannel>message.guild.channels.cache.find(ch => ch.id == settings.lvlUpChannel)
                 let text: string = client.provider.format({lvl:profile.lvl + 1,text:settings.lvlUpMsg, username: message.member?.displayName, user_mention: message.author.id, guild_name: message.guild.name})
+
                 toUpdate.lvl = toUpdate.lvl + 1
+
                 if(settings.lvlUpEmbed == 1) {
                     let embed = new MessageEmbed()
                         .setDescription(text)
@@ -103,10 +116,13 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
                 }else{
                     channel?.send(text)
                 }
+
                 await client.provider.updateProfile(message.guild.id,message.author.id,{xp:"0"})
                 await client.provider.updateRanks(message.guild.id,message.author.id,toUpdate)
+
                 return
             }
+
             await client.provider.updateRanks(message.guild.id,message.author.id,toUpdate)
         }
     }

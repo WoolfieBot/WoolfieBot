@@ -1,6 +1,8 @@
 import {Command} from "../../domain/Command";
 import {Message} from "discord.js";
 import {client} from "../../main";
+import {GuildObject} from "../../domain/ObjectModels";
+import items from "../../assets/items.json";
 
 class Buy extends Command {
     constructor() {
@@ -13,16 +15,38 @@ class Buy extends Command {
     }
 
     async run(message: Message, args: Array<string>) {
+        // Проверка включен ли ранкинг
+        const guild: GuildObject = await client.provider.getGuild(message.guild!.id);
+        if(guild.isLvl === 0) return message.channel.send(`На данном сервере отключён ранкинг.`);
+
         if(!args[0]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help ${this.name}\`\`\``)
-        const profile = await client.provider.getProfile(message.guild!.id, message.author.id)
+        const profile = await client.provider.getProfile(message.guild!.id, message.author.id);
+        let itemOfDay;
+        let indexes: Array<string> = [];
+
+        for (let itemsKey in items) {
+            if (items.hasOwnProperty(itemsKey)) {
+
+                if (itemsKey == "bank_upgrade") items[itemsKey].cost = Math.floor(items[itemsKey].cost + (5000 * profile.bankLvl) * 1.40)
+
+                if (items[itemsKey].isItemOfDay) {
+                    itemOfDay = items[itemsKey]
+
+                    indexes.unshift(itemsKey)
+                    continue;
+                }
+
+                indexes.push(itemsKey)
+            }
+        }
 
         switch (args[0]) {
             case "1":
-                if(profile.coins < 2000) return message.channel.send("Недостаточно наличных для совершения покупки!")
+                if(profile.coins < itemOfDay.cost) return message.channel.send("Недостаточно наличных для совершения покупки!")
                     let objBoost = JSON.parse(profile.items)
                     objBoost.xp_boost.amount = parseInt(objBoost.xp_boost.amount) + 1;
                     await client.provider.updateProfile(message.guild!.id, message.author.id, {items: JSON.stringify(objBoost), coins: profile.coins - 2000})
-                    await message.channel.send('Вы успешно купили предмет **Бустер опыта**! Количество в инвентаре: ' + objBoost.xp_boost.amount)
+                    await message.channel.send(`Вы успешно купили предмет **Бустер опыта**! Количество в инвентаре: ` + objBoost.xp_boost.amount)
                 break
             case "2":
                 if(profile.coins < 10000) return message.channel.send("Недостаточно наличных для совершения покупки!")
@@ -51,9 +75,6 @@ class Buy extends Command {
                 objReverse.reverse_card.amount = parseInt(objReverse.reverse_card.amount) + 1;
                 await client.provider.updateProfile(message.guild!.id, message.author.id, {items: JSON.stringify(objReverse), coins: profile.coins - 8000})
                 await message.channel.send('Вы успешно купили предмет **Карта возврата**! Количество в инвентаре: ' + objReverse.reverse_card.amount)
-                break
-            case "6":
-                return message.channel.send('Предмета с таким идентификатором не существует!')
                 break
             default:
                 return message.channel.send('Предмета с таким идентификатором не существует!')

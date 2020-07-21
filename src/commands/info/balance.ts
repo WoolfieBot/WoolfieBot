@@ -17,11 +17,30 @@ class Balance extends Command {
     }
 
     async run(message: Message, args: Array<string>) {
+        // Проверка включен ли ранкинг
+        const guild: any = await client.provider.getGuild(message.guild!.id);
+        if(guild.isLvl === 0) return message.channel.send(`На данном сервере отключён ранкинг.`);
+
+        // Переменные пользователя
         var member: GuildMember = await client.provider.getMember(message, args.join(" "));
         var profile: UserProfileData = await client.provider.getProfile(message.guild!.id,member.id)
+
+        // Проверка на существование профиля
+        if(profile === null){
+            const roles: any = member?.roles.cache
+                .filter((r: any) => r.id !== message.guild?.id)
+                .map((r:any) => r.id).join(", ") || 'none';
+
+            await client.provider.createProfile(message.guild!.id,member.id,member.user.username,member!.displayName,roles)
+            profile = await client.provider.getProfile(message.guild!.id,member.id)
+        }
+
         var bankMax: number = 10000 + (5000 * profile.bankLvl);
+
         let string: string;
+
         let cd: CooldownObject = await client.provider.getCooldown(message.guild!.id,member.id,"DAILY");
+
         if(cd == null) {
             string = "Пора забрать бонус!"
         }else{
@@ -29,9 +48,16 @@ class Balance extends Command {
             if( k < 0 ){ 
                 string = "Пора получать бонус!"
             }else{
-                string = humanizeDuration(k,{language: "ru", delimiter: " и ", largest: 2, round: true})
+                string = humanizeDuration(k,
+                    {
+                        language: "ru",
+                        delimiter: " и ",
+                        largest: 2,
+                        round: true}
+                    )
             }            
-        }        
+        }
+
         const embed: MessageEmbed = new MessageEmbed()
             .setTitle(`💰Банк пользователя ${member.displayName}`)
             .setDescription(`🏦**Баланс:** ${profile.bank}/${bankMax}\n💸**Наличные:** ${profile.coins}\n⏰**Ежедневный бонус:** \`${string}\``)

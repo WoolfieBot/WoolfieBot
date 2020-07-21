@@ -11,7 +11,8 @@
         "pretty": true,
         "lib": ["ES2020"],
         "noImplicitAny": false,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "resolveJsonModule": true
     },
     "include": [
         "src", "module.d.ts"

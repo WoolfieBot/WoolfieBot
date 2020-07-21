@@ -4,7 +4,6 @@ import { PlayerHelper } from "../../domain/PlayerHelper";
 import { client } from "../../main";
 import ytdl from "ytdl-core";
 import search from "yt-search";
-import Play from "./play";
 import HumanizeDuration from "humanize-duration";
   
 class Playlist extends Command {
@@ -141,7 +140,7 @@ class Playlist extends Command {
                 let pick = await (await message.channel.awaitMessages(filterr, { max: 1, time: 60000, errors: ['time'] })).first()?.content;
                 let song = playlist[parseInt(<string>pick) - 1];
                 await player.removeFromPlaylist(args[1], message.author.id, song.url);
-                message.channel.send('Вы успешно удалили трек из плейлиста!')
+                await message.channel.send('Вы успешно удалили трек из плейлиста!')
                 break;
             default:
                 return message.channel.send('Вы ввели неправильный аргумент! Проверьте правильность написания команды.')

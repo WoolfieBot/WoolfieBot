@@ -17,9 +17,6 @@ class WoolfieClient extends Client {
         super.login(token);
         this.getCommands();
         this.getEvents();
-        this.commands;
-        this.aliases;
-        this.category;
         this.provider = new WoolfieProvider();
     }
 

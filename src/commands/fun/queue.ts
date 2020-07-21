@@ -11,7 +11,8 @@ class Queue extends Command {
             name: "queue",
             description: "Команда с помощью которой можно посмотреть текущий плейлист сессии плеера.",
             category: "fun",
-            usage: ">queue"
+            usage: ">queue",
+            aliases: ["q"]
         });
     }
 
@@ -48,11 +49,16 @@ class Queue extends Command {
                 .setDescription(`**[${session.queue[0].songTitle}](${session.queue[0].url})**\n\nЗаказано: ${session.queue[0].requester}\n\n${progressString}\n\n${player.msToTime(session.dispatcher.streamTime)} / ${player.msToTime(session.queue[0].duration * 1000)}`)
         )
         if(session.queue.length > 1) {
-            message.channel.send(
+            await message.channel.send(
                 new MessageEmbed()
                     .setDescription(string)
                     .setAuthor('Очередь')
-                    .setFooter('Общая продолжительность: ' + HumanizeDuration(duration * 1000, {language: 'ru', delimiter: ' ', largest: 2, round: true}))
+                    .setFooter('Общая продолжительность: ' + HumanizeDuration(duration * 1000, {
+                        language: 'ru',
+                        delimiter: ' ',
+                        largest: 2,
+                        round: true
+                    }))
             )
         }
     }

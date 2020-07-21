@@ -1,7 +1,7 @@
 import { WoolfieClient } from "../../domain/WoolfieClient";
 
 export = async (client: WoolfieClient): Promise<void> => {
-    const url: string = await client.generateInvite("ADMINISTRATOR");
+    const url: string = await client.generateInvite(1610611702);
 
     console.log(`
     \nСервера           ==      ${client.guilds.cache.size}
@@ -11,10 +11,10 @@ export = async (client: WoolfieClient): Promise<void> => {
     `);
 
     client.user?.setPresence({
-        status:"idle",
+        status: "idle",
         activity: {
-            name: "Кашалие ломает стёкла",
-            type:"WATCHING"
+            name: "woofing",
+            type: "LISTENING"
         }
     })
 }

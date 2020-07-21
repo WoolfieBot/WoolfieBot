@@ -16,13 +16,6 @@ export = async(client: WoolfieClient, oldMember: GuildMember, newMember: GuildMe
                 if(displayName == newMember.user.username) displayName = 'none';
                 await client.provider.updateProfile(newMember.guild.id,newMember.id,{userDisplayName: displayName})
             }
-        } else {
-            const roles = newMember.roles.cache
-                .filter(r => r.id !== newMember.guild?.id)
-                .map(r => r.id).join(",") || 'none';
-            let displayName = newMember.displayName;
-            if(displayName == newMember.user.username) displayName = 'none';
-            await client.provider.createProfile(newMember.guild.id,newMember.id,newMember.user.username,displayName,roles)
         }
     }
 }
