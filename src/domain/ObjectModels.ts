@@ -280,6 +280,7 @@ export class UserInventory {
     readonly userID: string;
     readonly guildID: string;
     readonly itemID: string;
+    readonly amount: number;
     readonly lastUse: Date;
 
     constructor(data: UserInventory) {
@@ -287,6 +288,7 @@ export class UserInventory {
         this.guildID = data.guildID;
         this.userID = data.userID;
         this.itemID = data.itemID;
+        this.amount = data.amount;
         this.lastUse =  data.lastUse;
     }
 }

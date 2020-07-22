@@ -2,7 +2,7 @@ import { Command } from "../../domain/Command";
 import { Message, MessageEmbed } from "discord.js";
 import ytdl from "ytdl-core";
 import { client } from "../../main";
-import { PlayerHelper } from "../../domain/PlayerHelper";
+import {PlayerHelper, playerSessions} from "../../domain/PlayerHelper";
 import search from "yt-search";
 
 class Play extends Command {
@@ -32,9 +32,9 @@ class Play extends Command {
         } else {
             info = await ytdl.getInfo(args[0]);
         }
+
         let thumb = info.player_response.videoDetails.thumbnail.thumbnails;
-        
-        let data = player.getSession();
+        let data = playerSessions.get(message.guild?.id);
 
         if(!data) {
             let queue = [{
@@ -49,6 +49,7 @@ class Play extends Command {
                     width: thumb[thumb.length - 1].width 
                 }
             }];
+
             let voiceConnection = await message.member?.voice.channel.join();
             let dispatcher = await player.play(client, voiceConnection, player, queue);
             data = player.createSession(voiceConnection, dispatcher, queue);
@@ -69,7 +70,7 @@ class Play extends Command {
 
         if (data.queue.length > 1)
         {
-            await message.channel.send(new MessageEmbed().setImage(thumb[thumb.length - 1].url).setTitle('⬆️ Очередь').setDescription(`Трек:\n**[${info.title}](${info.video_url})**\n\nБыл добавлен в очередь пользователем:\n**${message.member.displayName || message.author.username}**\n\n${player.msToTime(parseInt(info.length_seconds) * 1000)}`).setFooter('Общее количество треков в плейлисте: ' + player.getSession().queue.length))
+            await message.channel.send(new MessageEmbed().setImage(thumb[thumb.length - 1].url).setTitle('⬆️ Очередь').setDescription(`Трек:\n**[${info.title}](${info.video_url})**\n\nБыл добавлен в очередь пользователем:\n**<@${message.member.id}>**\n\n${player.msToTime(parseInt(info.length_seconds) * 1000)}`).setFooter('Общее количество треков в плейлисте: ' + playerSessions.get(message.guild?.id).queue.length))
         }
 
     }

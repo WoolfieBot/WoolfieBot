@@ -98,9 +98,9 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
             lvl: 0
         };
 
-        if(messageCheckXp >= 2 && messageCheckXp <= 7){
+        if(messageCheckXp >= 2 && messageCheckXp <= 7) {
 
-            toUpdate.xp = await client.provider.getRandomInt(15, 55);
+            toUpdate.xp = await client.provider.getRandomInt(15, 45);
             toUpdate.coins = await client.provider.getRandomInt(1, 8);
 
             if(profile.xp >= Math.floor(100 + 100 * 2.891 * profile.lvl + 1)) {

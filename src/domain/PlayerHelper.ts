@@ -4,17 +4,13 @@ import search from "yt-search";
 import { WoolfieClient } from "./WoolfieClient";
 import ytdl from "ytdl-core";
 import HumanizeDuration from "humanize-duration";
-const playerSessions = new Map();
+export const playerSessions = new Map();
 
 class PlayerHelper {
     guildID: string;
 
     constructor(guildID: string) {
         this.guildID = guildID;
-    }
-
-    public getSession() {
-        return playerSessions.get(this.guildID);
     }
 
     public createSession(voiceConnection: VoiceConnection, streamDispatcher: StreamDispatcher, queue: Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number, thumb: { url: string, height: number, width: number }}>) {
@@ -24,22 +20,25 @@ class PlayerHelper {
             queue: queue,
             dispatcher: streamDispatcher
         })
-        return this.getSession();
+
+        return playerSessions.get(this.guildID);
     }
 
     public next(): Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number, thumb: { url: string, height: number, width: number }}> | null {
         if(playerSessions.get(this.guildID).queue.length < 1) return null;
         let data = playerSessions.get(this.guildID);
         data.queue.shift();
+
         playerSessions.set(this.guildID, data);
-        return this.getSession().queue;
+        return playerSessions.get(this.guildID).queue;
     }
 
     public add(info: object): Array<{songTitle: string, requester: string, url: string, announceChannel: string, duration: number, thumb: { url: string, height: number, width: number }}> | null {
-        let data = this.getSession();
+        let data = playerSessions.get(this.guildID);
         data.queue.push(info);
+
         playerSessions.set(this.guildID, data);
-        return this.getSession().queue;
+        return playerSessions.get(this.guildID).queue;
     }
 
     public deleteSession() {
@@ -58,7 +57,7 @@ class PlayerHelper {
         let count = 0;
 
         while(r.videos.length < 1) {
-            console.log(r)
+
             r = await search({
                 query: arg,
                 pageStart: 1,
@@ -94,7 +93,7 @@ class PlayerHelper {
                 errors: ['time']
             })
         .then(collected => {video.push(r.videos[parseInt(collected.first()!.content) - 1])})
-        .catch(collected => message.channel.send('Время выбора истекло.'));
+        .catch(() => message.channel.send('Время выбора истекло.'));
         return video;
     }
 
@@ -153,7 +152,7 @@ class PlayerHelper {
     }
     
     public async end(client: WoolfieClient, guildID: string, player: PlayerHelper) {
-        let session = player.getSession();
+        let session = playerSessions.get(this.guildID);
         let fetched = player.next();
 
         if (fetched!.length > 0) {
