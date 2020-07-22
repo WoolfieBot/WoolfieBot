@@ -90,7 +90,7 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
     }
 
     if(settings.isLvl == 1){
-        const messageCheckXp: number = await client.provider.getRandomInt(1, 15);
+        const messageCheckXp: number = await client.provider.getRandomInt(1, 13);
 
         const toUpdate = {
             xp: 0,
@@ -100,8 +100,8 @@ export = async (client: WoolfieClient, message: Message): Promise<void> => {
 
         if(messageCheckXp >= 2 && messageCheckXp <= 7){
 
-            toUpdate.xp = 1488;
-            toUpdate.coins = 1488;
+            toUpdate.xp = await client.provider.getRandomInt(15, 55);
+            toUpdate.coins = await client.provider.getRandomInt(1, 8);
 
             if(profile.xp >= Math.floor(100 + 100 * 2.891 * profile.lvl + 1)) {
                 let channel: TextChannel = <TextChannel>message.guild.channels.cache.find(ch => ch.id == settings.lvlUpChannel)

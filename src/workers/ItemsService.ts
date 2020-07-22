@@ -2,9 +2,12 @@ import { SimpleWorker } from "./WorkerTemplate";
 import { WoolfieClient } from "../domain/WoolfieClient";
 import { schedule } from "node-cron";
 import sequelize from "../models/sequelize";
-import {GuildObject, UserProfileData} from "../domain/ObjectModels";
+import {UserInventory} from "../domain/ObjectModels";
 import {DateTime} from "luxon";
-import {DataTypes} from "sequelize";
+import { writeFileSync } from "fs";
+import items from "../assets/items.json";
+
+export const cachedIndexes: Array<string> = [];
 
 export class ItemsService extends SimpleWorker {
     constructor(){
@@ -15,43 +18,63 @@ export class ItemsService extends SimpleWorker {
     }
 
     async setWorker(client: WoolfieClient) {
-        return
         schedule('*/1 * * * *', async () => {
             let startTime = DateTime.local().toMillis();
-            let profiles: Array<UserProfileData> = await sequelize.models.profiles.findAll()
-            let guilds: Array<GuildObject> = await sequelize.models.guilds.findAll()
+            let inventoryes: Array<UserInventory> = await sequelize.models.inventoryes.findAll()
 
             console.log('[' + DateTime.local().toFormat("TT") + ']' + ' ItemsService: Начата проверка предметов...');
 
-            profiles.forEach((profile) => {
-                let obj: any = JSON.parse(profile.items)
-                Object.keys(obj).forEach(async (x: any) => {
-                    if(obj[x].lastUse === null) return
-                    if(obj[x].lastUse <= DateTime.fromJSDate(new Date()).toMillis()) {
-                        obj[x].lastUse = null;
-                        await client.provider.updateProfile(profile.guildID,profile.userID,{items:obj})
+            for (const inv of inventoryes) {
+                if(inv.lastUse === null) continue;
+                    if(DateTime.fromJSDate(inv.lastUse).toMillis() <= DateTime.fromJSDate(new Date()).toMillis()) {
+                        await sequelize.models.inventoryes.update({lastUse: null}, {where:{guildID: inv.guildID, userID: inv.userID, itemID: inv.itemID}})
                     }
-                })
-            })
+            }
 
-            guilds.forEach((value) => {
-                if (value.itemOfDay !== null) {
-                    let obj = JSON.parse(<string>value.itemOfDay)
-                    if(obj.itemOfDay.update <= DateTime.fromJSDate(new Date()).toMillis()) {
-                        let namesArr = ["xp_boost","shield","lotery","reverse_card"];
-                        let random = namesArr[Math.floor(Math.random() * namesArr.length)];
-                        let time = DateTime.fromJSDate(new Date()).plus({hours: 24}).toMillis()
-                        client.provider.updateGuild(value.guildID,{itemOfDay: `{"itemOfDay":{"name":"${random}","update":${time}}}`})
+            let namesArr: Array<string> = [];
+            let timeExpired: boolean = false;
+
+            for (let itemKey in items) {
+                if(items.hasOwnProperty(itemKey)) {
+                    if(items[itemKey].isItemOfDay) {
+                        if((items[itemKey].updatedAt - DateTime.fromJSDate(new Date()).toMillis()) <= 0) {
+                            timeExpired = true;
+
+                            items[itemKey].sale = null;
+                            items[itemKey].isItemOfDay = false;
+                            items[itemKey].updatedAt = null;
+                        } else {
+                            continue;
+                        }
                     }
-                } else {
-                    let namesArr = ["xp_boost","shield","lotery","reverse_card"];
-                    let random = namesArr[Math.floor(Math.random() * namesArr.length)];
-                    let time = DateTime.fromJSDate(new Date()).plus({hours: 24}).toMillis()
-                    client.provider.updateGuild(value.guildID,{itemOfDay: `{"itemOfDay":{"name":"${random}","update":${time}}}`})
+                    namesArr.push(itemKey)
                 }
-            })
+            }
 
-            console.log('[' + DateTime.local().toFormat("TT") + ']' + ' ItemsService: Проверка завершена! Проверенно: ' + profiles.length + ' профилей. За: ' + Math.floor(DateTime.local().toMillis() -startTime) + ' ms.');
+            for (let itemsKey in items) {
+                if (items.hasOwnProperty(itemsKey)) {
+
+                    if (items[itemsKey].isItemOfDay) {
+
+                        cachedIndexes.unshift(itemsKey)
+                        continue;
+                    }
+
+                    cachedIndexes.push(itemsKey)
+                }
+            }
+
+            if(timeExpired) {
+                let random = namesArr[Math.floor(Math.random() * namesArr.length)];
+
+                items[random].sale = await client.provider.getRandomInt(5, 50);
+                items[random].updatedAt = DateTime.fromJSDate(new Date()).plus({hours: 24}).toMillis();
+                items[random].isItemOfDay = true;
+
+                await writeFileSync('/home/Node1/WoolfieBot/dist/assets/items.json', JSON.stringify(items, null, 2))
+            }
+
+            console.log('[' + DateTime.local().toFormat("TT") + ']' + ' ItemsService: Проверка завершена! Проверенно: ' + inventoryes.length + ' предметов. За: ' + Math.floor(DateTime.local().toMillis() -startTime) + ' ms.');
         })
     }
 }

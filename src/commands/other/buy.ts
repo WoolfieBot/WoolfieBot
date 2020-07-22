@@ -1,8 +1,10 @@
 import {Command} from "../../domain/Command";
 import {Message} from "discord.js";
 import {client} from "../../main";
-import {GuildObject} from "../../domain/ObjectModels";
+import {GuildObject, UserInventory} from "../../domain/ObjectModels";
+import {cachedIndexes} from "../../workers/ItemsService"
 import items from "../../assets/items.json";
+import sequelize from "../../models/sequelize";
 
 class Buy extends Command {
     constructor() {
@@ -21,32 +23,13 @@ class Buy extends Command {
 
         if(!args[0]) return message.channel.send(`Вы пропустили обязательный аргумент! Посмотреть использование данной команды можно через: \`\`\`>help ${this.name}\`\`\``)
         const profile = await client.provider.getProfile(message.guild!.id, message.author.id);
-        let itemOfDay;
-        let indexes: Array<string> = [];
-
-        for (let itemsKey in items) {
-            if (items.hasOwnProperty(itemsKey)) {
-
-                if (itemsKey == "bank_upgrade") items[itemsKey].cost = Math.floor(items[itemsKey].cost + (5000 * profile.bankLvl) * 1.40)
-
-                if (items[itemsKey].isItemOfDay) {
-                    itemOfDay = items[itemsKey]
-
-                    indexes.unshift(itemsKey)
-                    continue;
-                }
-
-                indexes.push(itemsKey)
-            }
-        }
+        let itemOfDay = cachedIndexes[0];
+        let inventory: Array<UserInventory> = await sequelize.models.inventoryes.findAll({where:{userID: profile.userID}})
 
         switch (args[0]) {
             case "1":
-                if(profile.coins < itemOfDay.cost) return message.channel.send("Недостаточно наличных для совершения покупки!")
-                    let objBoost = JSON.parse(profile.items)
-                    objBoost.xp_boost.amount = parseInt(objBoost.xp_boost.amount) + 1;
-                    await client.provider.updateProfile(message.guild!.id, message.author.id, {items: JSON.stringify(objBoost), coins: profile.coins - 2000})
-                    await message.channel.send(`Вы успешно купили предмет **Бустер опыта**! Количество в инвентаре: ` + objBoost.xp_boost.amount)
+                    if(profile.coins < items[itemOfDay].upgradeCost ? items[itemOfDay].upgradeCost - Math.floor( items[itemOfDay].upgradeCost / 100 * items[itemOfDay].sale): items[itemOfDay].cost - Math.floor( items[itemOfDay].cost / 100 * items[itemOfDay].sale)) return message.channel.send("Недостаточно наличных для совершения покупки!")
+                    await message.channel.send(`Вы успешно купили предмет **Бустер опыта**! Количество в инвентаре: `)
                 break
             case "2":
                 if(profile.coins < 10000) return message.channel.send("Недостаточно наличных для совершения покупки!")

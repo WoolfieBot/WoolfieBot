@@ -41,13 +41,13 @@ class Shop extends Command {
             }
         }
 
-        const k: number = DateTime.fromJSDate(new Date()).startOf('day').plus({hours: 21}).toMillis() - DateTime.fromJSDate(new Date()).toMillis();
+        const k: number = itemOfDay.updatedAt - DateTime.fromJSDate(new Date()).toMillis();
 
         const embed = new MessageEmbed()
             .setTitle('🛒 Магазин предметов')
             .setTimestamp()
             .setThumbnail(<string>client.user?.avatarURL({format: "png", size: 256}))
-            .addField(`\`ID: 1\` Предмет дня (сбросится через \`${humanizeDuration(k,{language: "ru", delimiter: " и ", largest: 2, round: true})}\`)`,`${itemOfDay.name} ─ ***${itemOfDay.cost - Math.floor( itemOfDay.cost / 100 * itemOfDay.sale)} монет!*** **([<:sale:714784321671790622>СКИДКА ${itemOfDay.sale}%!](https://www.youtube.com/watch?v=8avMLHvLwRQ))** ─ ${itemOfDay.description}`)
+            .addField(`\`ID: 1\` Предмет дня (сбросится через \`${humanizeDuration(k,{language: "ru", delimiter: " и ", largest: 2, round: true})}\`)`,`${itemOfDay.name} ─ ***${itemOfDay.upgradeCost ? itemOfDay.upgradeCost - Math.floor( itemOfDay.upgradeCost / 100 * itemOfDay.sale): itemOfDay.cost - Math.floor( itemOfDay.cost / 100 * itemOfDay.sale)} монет!*** **([<:sale:714784321671790622>СКИДКА ${itemOfDay.sale}%!](https://www.youtube.com/watch?v=8avMLHvLwRQ))** ─ ${itemOfDay.description}`)
             .addField('Все доступные предметы', string)
             .setFooter('Что бы купить что-то, используйте команду buy <номер товара>')
         await message.channel.send(embed)

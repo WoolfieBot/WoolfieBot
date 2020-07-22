@@ -23,15 +23,19 @@ class Daily extends Command {
 
         let time: string = DateTime.fromJSDate(new Date()).plus({hours: 12}).toISO()
         let cd: CooldownObject = await client.provider.getCooldown(message.guild!.id,message.author.id,"DAILY");
+
         var string: string;
+
         if(cd == null) {
             await client.provider.updateRanks(message.guild!.id,message.author.id,{coins:500})
+
             await message.channel.send(`Вы успешно получили ежедневный бонус в виде **500 монет!** приходите снова через 12 часов ;)`)
             return await client.provider.createCooldown(message.guild!.id,message.author.id,"DAILY",time)
         }else{
             var k: number = DateTime.fromJSDate(cd.expiresAt).toMillis() - DateTime.fromJSDate(new Date()).toMillis()
             if( k < 0 ){ 
                 await client.provider.updateRanks(message.guild!.id,message.author.id,{coins:500})
+
                 await message.channel.send(`Вы успешно получили ежедневный бонус в виде **500 монет!** приходите снова через 12 часов ;)`)
                 await client.provider.deleteCooldown(message.guild!.id,message.author.id,"DAILY")
                 return await client.provider.createCooldown(message.guild!.id,message.author.id,"DAILY",time)
